@@ -16,3 +16,5 @@
 *.out
 *.dat
 *.vstf
+*.mpf
+work/
