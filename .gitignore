@@ -19,3 +19,4 @@
 *.mpf
 work/
 transcript
+.DS_Store
