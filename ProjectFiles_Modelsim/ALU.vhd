@@ -88,4 +88,3 @@ F <= F_AUX;
 Cout <= Cout_AUX;
 
 end ALU_arch;
---
