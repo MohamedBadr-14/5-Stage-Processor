@@ -16,7 +16,7 @@ end entity;
 
 Architecture ProtectStatusRegister_arch of ProtectStatusRegister is
 
-    type data_mem is array(0 to 4095) of std_logic;	--2^12 instruction 
+    type data_mem is array(2048 to 4095) of std_logic;
 	signal PF_array : data_mem := (others => '0');
 
 begin
@@ -27,10 +27,12 @@ begin
 		if RST = '1' then
 			PF_array <= (others => '0');
 		elsif falling_edge(CLK) then
-			if Write_enable = '1' then
-				PF_array(to_integer(unsigned(Res1))) <= Protect/Free;
-			else
-				null;
+			if to_integer(unsigned(Res1)) >= 2048 and to_integer(unsigned(Res1)) <= 4095 then
+				if Write_enable = '1' then
+					PF_array(to_integer(unsigned(Res1))) <= Protect/Free;
+				else
+					null;
+				end if;
 			end if;
 		end if;
 		
