@@ -288,6 +288,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	end component;
 
 	component Data_Memory is
+
 		port(
 			Rst,Clk         : in std_logic;
 			Mem_Write   	: in std_logic;
@@ -296,6 +297,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			Mem_Read        : in std_logic;
 			Mem_Out         : out std_logic_vector(31 downto 0)
 		);
+
 	end component;
 
 	
@@ -444,7 +446,4 @@ begin
 
 	MemWrite_Final <= not(Prot_Reg_isProtected) AND MemWrite;
 
-
-	Data_Mem	: Data_Memory port map(reset,clk,MemWrite_Final,ALU_Res1,EX_MEM_Res2_Out,MemWrite_Final,dummy_MeM_Out);
-	
 end Pipeline_Integration_arch;
