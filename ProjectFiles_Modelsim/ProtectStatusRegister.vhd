@@ -41,3 +41,4 @@ begin
 	isProtected <= PF_array(to_integer(unsigned(Res1)));
 
 end ProtectStatusRegister_arch;
+----------------------------------------------------------------------------------------------------------------------------
