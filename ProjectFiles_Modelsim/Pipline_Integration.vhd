@@ -389,7 +389,7 @@ begin
 	ID_EX		: ID_EX_Pipe_Reg port map(clk,reset,WB_Ctrl_Signal(0),WB_Ctrl_Signal(2),WB_Ctrl_Signal(1),
 						EX_Ctrl_Signal(3),EX_Ctrl_Signal(2),CCR_Write_Ctrl_Signal,
 						OP1,OP2,IF_ID_Inst_Out(7 downto 5),IF_ID_Inst_Out(4 downto 2),IF_ID_Inst_Out(15 downto 11),
-						IF_ID_Inst_Out(10 downto 8),Rdata,M_Ctrl_Signal(1),M_Ctrl_Signal(0),ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
+						IF_ID_Inst_Out(10 downto 8),Rdata1,M_Ctrl_Signal(1),M_Ctrl_Signal(0),ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
 						ID_EX_ALUOp_Out,ID_EX_RegDst_Out,ID_EX_CCR_Write_Out,ID_EX_OP1_Out,ID_EX_OP2_Out,
 						ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_Opcode_Out,ID_EX_DST_10_8_Out,ID_EX_Rdata2_Prop_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out);
 
@@ -428,7 +428,7 @@ begin
 						MEM_WB_RegDst_Out,MEM_WB_MeM_Out_Out,MEM_WB_DST_10_8_Out);
 	
 
-	PSR	: ProtectStatusRegister port map(RST=>rst, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>ALU_Res1, 
+	PSR	: ProtectStatusRegister port map(RST=>reset, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>ALU_Res1, 
 										Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected);
 
 	MemWrite_Final <= not(Prot_Reg_isProtected) AND MemWrite;
