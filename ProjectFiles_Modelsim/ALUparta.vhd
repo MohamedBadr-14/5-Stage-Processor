@@ -61,13 +61,15 @@ out1:	SixteenBitAdder generic map(n) PORT MAP(a=>A_sel,b=>B_sel,cin=>Cin_sel,s=>
 with Sel_AUX select 
 F <= 
 		(others => '0')	when    "00000" ,
-		(others => '0')	when    "00101" ,
+		B				when    "00101" ,
+		A				when    "00111" ,
 		F_AUX			when 	 others;
 
 with Sel_AUX select 
 Cout <= 
 		'0'				when    "00000" ,
 		'0'				when    "00101" ,
+		'0'				when    "00111" ,
 		Cout_AUX		when 	 others;
 
 end ALUparta_arch;

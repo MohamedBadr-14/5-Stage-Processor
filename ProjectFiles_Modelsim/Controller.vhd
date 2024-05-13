@@ -35,9 +35,9 @@ begin
 	ELSE  "1100" WHEN opcode = "00111"
 	ELSE  "1000" WHEN opcode = "01000"
 	ELSE  "1100" WHEN opcode = "01001"
-	ELSE  "1000" WHEN opcode = "01010" -- ADDI not handled yet
+	ELSE  "1000" WHEN opcode = "01010"
 	ELSE  "1100" WHEN opcode = "01011"
-	ELSE  "1000" WHEN opcode = "01100" -- SUBI not handled yet
+	ELSE  "1000" WHEN opcode = "01100"
 	ELSE  "1100" WHEN opcode = "01101"
 	ELSE  "1100" WHEN opcode = "01110"
 	ELSE  "1100" WHEN opcode = "01111"
@@ -56,9 +56,9 @@ begin
 	ELSE  "100" WHEN opcode = "00111"
 	ELSE  "110" WHEN opcode = "01000"
 	ELSE  "100" WHEN opcode = "01001"
-	ELSE  "100" WHEN opcode = "01010" -- ADDI not handled yet
+	ELSE  "100" WHEN opcode = "01010"
 	ELSE  "100" WHEN opcode = "01011"
-	ELSE  "100" WHEN opcode = "01100" -- SUBI not handled yet
+	ELSE  "100" WHEN opcode = "01100"
 	ELSE  "100" WHEN opcode = "01101"
 	ELSE  "100" WHEN opcode = "01110"
 	ELSE  "100" WHEN opcode = "01111"
