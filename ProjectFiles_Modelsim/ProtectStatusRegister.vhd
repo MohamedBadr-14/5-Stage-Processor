@@ -28,7 +28,7 @@ begin
 			PF_array <= (others => '0');
 		elsif falling_edge(CLK) then
 			if Write_enable = '1' then
-				PF_array(to_integer(unsigned(Res1%2048))) <= Protect_Free;
+				PF_array(to_integer(unsigned(Res1 mod 2048))) <= Protect_Free;
 			else
 				null;
 			end if;
@@ -36,7 +36,7 @@ begin
 		
 	end process;
 
-	isProtected <= PF_array(to_integer(unsigned(Res1%2048)));
+	isProtected <= PF_array(to_integer(unsigned(Res1 mod 2048)));
 
 end ProtectStatusRegister_arch;
 ----------------------------------------------------------------------------------------------------------------------------

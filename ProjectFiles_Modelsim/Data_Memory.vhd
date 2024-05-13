@@ -32,8 +32,8 @@ begin
 
         if falling_edge(Clk) then
             if Mem_Write = '1' then
-                data_array(to_integer(unsigned(Address%2048))) <= Data(31 downto 16);
-                data_array(to_integer(unsigned(Address%2048))+1) <= Data(15 downto 0);
+                data_array(to_integer(unsigned(Address mod 2048))) <= Data(31 downto 16);
+                data_array(to_integer(unsigned(Address mod 2048))+1) <= Data(15 downto 0);
             end if;
         end if;
 
@@ -42,8 +42,8 @@ begin
     process(Mem_Read)
     begin
         if Mem_Read = '1' then
-            Mem_Out(31 downto 16) <= data_array(to_integer(unsigned(Address%2048)));
-            Mem_Out(15 downto 0) <= data_array(to_integer(unsigned(Address%2048))+1);
+            Mem_Out(31 downto 16) <= data_array(to_integer(unsigned(Address mod 2048)));
+            Mem_Out(15 downto 0) <= data_array(to_integer(unsigned(Address mod 2048))+1);
         end if;
     end process;
 
