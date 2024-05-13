@@ -8,7 +8,7 @@ entity ProtectStatusRegister is
         RST,CLK	        : in std_logic;
 		Write_enable	: in std_logic;
 		Res1	        : in std_logic_vector(31 downto 0);
-		Protect/Free	: in std_logic; -- 1: Protect, 0: Free
+		Protect_Free	: in std_logic; -- 1: Protect, 0: Free
 		isProtected		: out std_logic
 	);
 
@@ -29,7 +29,7 @@ begin
 		elsif falling_edge(CLK) then
 			if to_integer(unsigned(Res1)) >= 2048 and to_integer(unsigned(Res1)) <= 4095 then
 				if Write_enable = '1' then
-					PF_array(to_integer(unsigned(Res1))) <= Protect/Free;
+					PF_array(to_integer(unsigned(Res1))) <= Protect_Free;
 				else
 					null;
 				end if;
