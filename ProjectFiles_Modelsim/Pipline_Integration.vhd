@@ -26,6 +26,23 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 
 	end component;
 
+	component PC_Circuit is
+
+		Port (
+        PC_New_Value  : in  std_logic_vector(31 downto 0);
+        PC_From_EX  : in  std_logic_vector(31 downto 0);
+        Rdst       : in  std_logic_vector(31 downto 0);
+		Rdst_From_EX       : in  std_logic_vector(31 downto 0);
+        Mem_Out       : in  std_logic_vector(31 downto 0);
+        unCond_or_Pred : in std_logic := '0';
+        Should_Branch : in std_logic :='0';
+        Should_Not_Branch : in std_logic := '0';
+        PC_Selector_Mem : in std_logic :='0';
+        Outp     : out std_logic_vector(31 downto 0)
+    	);
+
+	end component;
+
 	component Instruction_Memory is
 
 		port(	
@@ -103,6 +120,27 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 
 	end component;
 
+	component Branching_Decode is
+
+		PORT( 
+    		Rdst, IN_Rdst_EX_MEM_1 , IN_Rdst_EX_MEM_2 , Rdst_EX_MEM_OUT_1, Rdst_EX_MEM_OUT_2 : in std_logic_vector(2 downto 0);
+    		RData , Res1 , Res2 , Res1_OUT_EX_MEM , Res2_OUT_EX_MEM : in std_logic_vector(31 downto 0);
+    		RegWrite_1 , RegWrite_2 , OUT_EX_MEM_RegWrite_1 , OUT_EX_MEM_RegWrite_2 : in std_logic;
+    		Rdst_Val : out std_logic_vector(31 downto 0) 
+    	);
+
+	end component;
+
+	component Predictor is
+
+		PORT(
+			clk,rst : IN std_logic;
+            Should_Branch , Shoud_Not_Branch : IN std_logic;
+			Decision : OUT std_logic
+		);
+
+	end component;
+
 	component ID_EX_Pipe_Reg is
 
 		port(
@@ -124,6 +162,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			IN_MemRead				: in std_logic;
 			IN_Protect_Free 		: in std_logic;
 			IN_PS_W_EN 				: in std_logic;
+			IN_PC_Address			: in std_logic_vector(31 downto 0);
+			IN_Rdst_Val				: in std_logic_vector(31 downto 0);
 			OUT_WB_MemToReg			: out std_logic;
 			OUT_WB_RegWrite1		: out std_logic;
 			OUT_WB_RegWrite2		: out std_logic;	
@@ -140,7 +180,9 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			OUT_MemWrite		 	: out std_logic;
 			OUT_MemRead				: out std_logic;
 			OUT_Protect_Free 		: out std_logic;
-			OUT_PS_W_EN 			: out std_logic	
+			OUT_PS_W_EN 			: out std_logic;
+			OUT_PC_Address 			: out std_logic_vector(31 downto 0);
+			OUT_Rdst_Val				: out std_logic_vector(31 downto 0)	
 	);
 
 	end component;
@@ -315,6 +357,14 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal IF_ID_Inst_Out			: std_logic_vector(15 downto 0);
 	signal IF_ID_INPORT_OUT			: std_logic_vector(31 downto 0);
 
+	signal unCond_or_Pred			: std_logic := '0';
+	signal Should_Branch			: std_logic := '0';
+	signal Should_Not_Branch		: std_logic := '0';
+	signal PC_Selector_Mem			: std_logic := '0';
+	signal PC_Val					: std_logic_vector(31 downto 0);
+	signal Rdst_Val					: std_logic_vector(31 downto 0);
+	signal Branch_Prediction		: std_logic;
+
 	signal IsInstIn_Buff_Out		: std_logic;
 	signal IsInstOut_Ctrl_Out		: std_logic;
 	signal CCR_Write_Ctrl_Signal	: std_logic_vector(3 downto 0);
@@ -344,6 +394,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal ID_EX_MemRead_Out		: std_logic;
 	signal ID_EX_Protect_Free_Out	: std_logic;
 	signal ID_EX_PS_W_EN_Out		: std_logic;
+	signal ID_EX_PC_Out				: std_logic_vector(31 downto 0);
+	signal ID_EX_Rdst_Val_OUT		: std_logic_vector(31 downto 0);
 
 	signal ALU_Sel_Bits				: std_logic_vector(4 downto 0);
 	signal Operand1,Operand2		: std_logic_vector(31 downto 0);		
@@ -380,6 +432,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal dummy_MeM_Out			: std_logic_vector(31 downto 0);
 	signal dummy_ALU_Res2			: std_logic_vector(31 downto 0);
 	signal dummy_32bits				: std_logic_vector(31 downto 0); -- It's used always to fill the 8X1 ALU operands MUX
+	signal dummy_Should_Branch      : std_logic;
+	signal dummy_Should_Not_Branch  : std_logic;
 
 	signal Prot_Reg_isProtected		: std_logic;
 	signal MemWrite_Final			: std_logic;
@@ -394,11 +448,19 @@ begin
 
 	PC		: Program_Counter port map('1',reset,clk,PC_Address);
 
-	IC		: Instruction_Memory port map(PC_Address,'0',IC_Instruction);
+	PC_Circuit_label : PC_Circuit port map(PC_Address, ID_EX_PC_Out , Rdst_Val , ID_EX_Rdst_Val_OUT ,  dummy_MeM_Out , unCond_or_Pred , Should_Branch , Should_Not_Branch , PC_Selector_Mem , PC_Val); --hazard detection unit and forward unit
+
+	IC		: Instruction_Memory port map(PC_Val,'0',IC_Instruction);
 
 	Sign_Extend	: Sign_Extender port map(IC_Instruction,IC_Inst_Extended);
 
 	IF_ID		: IF_ID_Pipe_Reg port map(clk,reset,PC_Address,IC_Instruction,INPORT,IF_ID_PC_Out,IF_ID_Inst_Out,IF_ID_INPORT_OUT);
+
+	Branching_Unit : Branching_Decode port map(IF_ID_Inst_Out(7 downto 5) , RegDst_MUX_Out , ID_EX_DST_10_8_Out , EX_MEM_RegDst_Out , EX_MEM_DST_10_8_Out , 
+	OP2, ALU_Res1 , dummy_ALU_Res2 , EX_MEM_Res1_Out , EX_MEM_Res2_Out , ID_EX_RegWrite1_Out ,ID_EX_RegWrite2_Out, EX_MEM_RegWrite1_Out,
+	EX_MEM_RegWrite2_Out, Rdst_Val);
+
+	Pred : Predictor port map(clk , reset , dummy_Should_Branch ,  dummy_Should_Not_Branch , Branch_Prediction); --output to hazard detection
 
 	Imm_Flag_Buffer	: my_DFF port map(IsInstOut_Ctrl_Out,clk,reset,IsInstIn_Buff_Out);
 	
@@ -415,9 +477,11 @@ begin
 	ID_EX		: ID_EX_Pipe_Reg port map(clk,reset,WB_Ctrl_Signal(0),WB_Ctrl_Signal(2),WB_Ctrl_Signal(1),
 						EX_Ctrl_Signal(3),EX_Ctrl_Signal(2),CCR_Write_Ctrl_Signal,
 						OP1,OP2,IF_ID_Inst_Out(7 downto 5),IF_ID_Inst_Out(4 downto 2),IF_ID_Inst_Out(15 downto 11),
-						IF_ID_Inst_Out(10 downto 8),Rdata1,M_Ctrl_Signal(3),M_Ctrl_Signal(2),M_Ctrl_Signal(1),M_Ctrl_Signal(0),ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
+						IF_ID_Inst_Out(10 downto 8),Rdata1,M_Ctrl_Signal(3),M_Ctrl_Signal(2),M_Ctrl_Signal(1),M_Ctrl_Signal(0),IF_ID_PC_Out,Rdst_Val,
+						ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
 						ID_EX_ALUOp_Out,ID_EX_RegDst_Out,ID_EX_CCR_Write_Out,ID_EX_OP1_Out,ID_EX_OP2_Out,
-						ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_Opcode_Out,ID_EX_DST_10_8_Out,ID_EX_Rdata2_Prop_Out,ID_EX_MemWrite_Out,ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out);
+						ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_Opcode_Out,ID_EX_DST_10_8_Out,ID_EX_Rdata2_Prop_Out,ID_EX_MemWrite_Out,
+						ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out,ID_EX_PC_Out,ID_EX_Rdst_Val_OUT);
 
 	ALU_CTRL	: ALU_Controller port map(ID_EX_Opcode_Out,ID_EX_ALUOp_Out,ALU_Sel_Bits);
 
