@@ -372,6 +372,10 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal Prot_Reg_isProtected		: std_logic;
 	signal MemWrite					: std_logic;
 	signal MemWrite_Final			: std_logic;
+
+	signal Memory_Data				: std_logic_vector(31 downto 0);
+	signal Memory_Address			: std_logic_vector(31 downto 0);
+	signal Memory_Out				: std_logic_vector(31 downto 0);
 	
 	
 begin
@@ -444,6 +448,7 @@ begin
 
 	MemWrite_Final <= not(Prot_Reg_isProtected) AND MemWrite;
 
-	Data_Mem	: Data_Memory port map(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_Final,Address=>ALU_Res1,Data=>MEM_WB_Res2_Out,Mem_Read=>'0',Mem_Out=>dummy_MeM_Out);
+	Data_Mem	: Data_Memory port map(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_Final,
+										Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>'0',Mem_Out=>Memory_Out);
 
 end Pipeline_Integration_arch;
