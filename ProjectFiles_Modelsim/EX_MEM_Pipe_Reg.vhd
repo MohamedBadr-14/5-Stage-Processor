@@ -14,6 +14,8 @@ entity EX_MEM_Pipe_Reg is
 		IN_Res2					: in std_logic_vector(31 downto 0);
 		IN_MUX_RegDst_Out		: in std_logic_vector(2 downto 0);
 		IN_DST_10_8				: in std_logic_vector(2 downto 0);
+		IN_MemWrite		 		: in std_logic;
+		IN_MemRead				: in std_logic;
 		IN_Protect_Free 		: in std_logic;
 		IN_PS_W_EN 				: in std_logic;
 
@@ -25,6 +27,8 @@ entity EX_MEM_Pipe_Reg is
 		OUT_Res2				: out std_logic_vector(31 downto 0);
 		OUT_MUX_RegDst_Out		: out std_logic_vector(2 downto 0);
 		OUT_DST_10_8			: out std_logic_vector(2 downto 0);
+		OUT_MemWrite		 	: out std_logic;
+		OUT_MemRead				: out std_logic;
 		OUT_Protect_Free 		: out std_logic;
 		OUT_PS_W_EN 			: out std_logic
 	);
@@ -48,6 +52,8 @@ begin
 			OUT_Res2 <= (others => '0');
 			OUT_MUX_RegDst_Out <= (others => '0');
 			OUT_DST_10_8 <= (others => '0');
+			OUT_MemWrite <= '0';
+			OUT_MemRead <= '0';
 			OUT_Protect_Free <= '0';
 			OUT_PS_W_EN <= '0';
 		elsif rising_edge(clk) then
@@ -59,6 +65,8 @@ begin
 			OUT_Res2 <= IN_Res2;
 			OUT_MUX_RegDst_Out <= IN_MUX_RegDst_Out;
 			OUT_DST_10_8 <= IN_DST_10_8;
+			OUT_MemWrite <= IN_MemWrite;
+			OUT_MemRead <= IN_MemRead;
 			OUT_Protect_Free <= IN_Protect_Free;
 			OUT_PS_W_EN <= IN_PS_W_EN;
 		end if;
