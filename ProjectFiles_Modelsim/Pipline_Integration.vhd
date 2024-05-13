@@ -287,6 +287,19 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 		);
 	end component;
 
+	component Data_Memory is
+
+		port(
+			Rst,Clk         : in std_logic;
+			Mem_Write   	: in std_logic;
+			Address         : in std_logic_vector(31 downto 0);
+			Data            : in std_logic_vector(31 downto 0);
+			Mem_Read        : in std_logic;
+			Mem_Out         : out std_logic_vector(31 downto 0)
+		);
+	
+	end component;
+
 	
 	signal PC_Address 				: std_logic_vector(31 downto 0);
 	signal IC_Instruction			: std_logic_vector(15 downto 0);
