@@ -10,7 +10,7 @@ entity Controller is
 		CCR_Write	: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : OVF / bit2: CF / bit1 : NF / bit0 : ZF
 		EX 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : ALUOp / bit2 : RegDst / bit1 : ALUSrc1 / bit0 : ALUSrc2
 		WB 			: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2/ bit0 : MemToReg
-		M 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : MemWrite / bit2 : MemRead / bit1 : Protect_Free / bit0 : PS_W_EN      
+		M 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : MemWrite / bit2 : MemRead / bit1 : Protect_Free / bit0 : PS_W_EN
 		IsInstOut	: OUT std_logic
     	);
 
@@ -86,8 +86,12 @@ begin
 	ELSE	     "0000";
 
 
-	M <= "11" WHEN opcode = "10110"
-	ELSE "01" WHEN opcode = "10111"
-	ELSE "00";
+	M <= "1000" WHEN opcode = "10010" -- Push
+	ELSE "0100" WHEN opcode = "10011" -- Pop
+	ELSE "0100" WHEN opcode = "10100" -- LDD
+	ELSE "1000" WHEN opcode = "10101" -- STD
+	ELSE "0011" WHEN opcode = "10110" -- Protect
+	ELSE "0001" WHEN opcode = "10111" -- Free
+	ELSE "0000";
    
 end Arch1;
