@@ -5,11 +5,12 @@ USE IEEE.numeric_std.all;
 entity Controller is
 
 	port(
-        	opcode 		: IN std_logic_vector(4 DOWNTO 0);
+        opcode 		: IN std_logic_vector(4 DOWNTO 0);
 		IsInstIn	: IN std_logic;
 		CCR_Write	: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : OVF / bit2: CF / bit1 : NF / bit0 : ZF
-		EX 		: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : ALUOp / bit2 : RegDst / bit1 : ALUSrc1 / bit0 : ALUSrc2
-		WB 		: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2/ bit0 : MemToReg     
+		EX 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : ALUOp / bit2 : RegDst / bit1 : ALUSrc1 / bit0 : ALUSrc2
+		WB 			: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2/ bit0 : MemToReg
+		M 			: OUT std_logic_vector(1 DOWNTO 0); -- bit1 : Protect/Free / bit0 : PS_W_EN   
 		IsInstOut	: OUT std_logic
     	);
 
@@ -41,7 +42,7 @@ begin
 	ELSE  "1100" WHEN opcode = "01110"
 	ELSE  "1100" WHEN opcode = "01111"
 	ELSE  "1000" WHEN opcode = "10000"
-	ELSE  "1010" WHEN opcode = "10001";
+	ELSE  "0000";
 
 	WB <= "000" WHEN IsInstIN = '0'
 	ELSE  "000" WHEN opcode = "00000"
@@ -60,8 +61,7 @@ begin
 	ELSE  "100" WHEN opcode = "01101"
 	ELSE  "100" WHEN opcode = "01110"
 	ELSE  "100" WHEN opcode = "01111"
-	ELSE  "000" WHEN opcode = "10000"
-	ELSE  "100" WHEN opcode = "10001";
+	ELSE  "000";
 
 	--OVF CF NF ZF
 	CCR_Write <= "0000" WHEN opcode = "00000"
@@ -82,5 +82,10 @@ begin
 	ELSE         "0011" WHEN opcode = "01111"
 	ELSE         "0011" WHEN opcode = "10000"
 	ELSE	     "0000";
+
+
+	M <= "11" WHEN opcode = "10110"
+	ELSE "01" WHEN opcode = "10111"
+	ELSE "00";
    
 end Arch1;
