@@ -7,6 +7,7 @@ entity PC_Circuit is
         PC_New_Value  : in  std_logic_vector(31 downto 0);
         PC_From_EX  : in  std_logic_vector(31 downto 0);
         Rdst       : in  std_logic_vector(31 downto 0);
+        Rdst_From_EX : in std_logic_vector(31 downto 0);
         Mem_Out       : in  std_logic_vector(31 downto 0);
         unCond_or_Pred : in std_logic := '0';
         Should_Branch : in std_logic :='0';
@@ -46,7 +47,7 @@ begin
     generic map(32)
     port map (
         in0 => Mux0_Output,
-        in1 => Rdst,  
+        in1 => Rdst_From_EX,  
         sel => Should_Branch,
         out1  => Mux1_Output
     );
