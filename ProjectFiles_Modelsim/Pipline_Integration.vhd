@@ -84,7 +84,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			CCR_Write	: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : OVF / bit2: CF / bit1 : NF / bit0 : ZF
 			EX 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : ALUOp / bit2 : RegDst / bit1 : ALUSrc1 / bit0 : ALUSrc2
 			WB 			: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2/ bit0 : MemToReg
-			M 			: OUT std_logic_vector(3 DOWNTO 0); -- bit1 : Protect_Free / bit0 : PS_W_EN   
+			M 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : MemWrite / bit2 : MemRead / bit1 : Protect_Free / bit0 : PS_W_EN
 			IsInstOut	: OUT std_logic
     	);
 
@@ -120,6 +120,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			IN_OPcode				: in std_logic_vector(4 downto 0);
 			IN_DST_10_8				: in std_logic_vector(2 downto 0);
 			IN_Rdata2_Propagated	: in std_logic_vector(31 downto 0);
+			IN_MemWrite		 		: in std_logic;
+			IN_MemRead				: in std_logic;
 			IN_Protect_Free 		: in std_logic;
 			IN_PS_W_EN 				: in std_logic;
 			OUT_WB_MemToReg			: out std_logic;
@@ -135,6 +137,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			OUT_OPcode				: out std_logic_vector(4 downto 0);
 			OUT_DST_10_8			: out std_logic_vector(2 downto 0);
 			OUT_Rdata2_Propagated	: out std_logic_vector(31 downto 0);
+			OUT_MemWrite		 	: out std_logic;
+			OUT_MemRead				: out std_logic;
 			OUT_Protect_Free 		: out std_logic;
 			OUT_PS_W_EN 			: out std_logic	
 	);
@@ -189,6 +193,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			IN_Res2					: in std_logic_vector(31 downto 0);
 			IN_MUX_RegDst_Out		: in std_logic_vector(2 downto 0);
 			IN_DST_10_8				: in std_logic_vector(2 downto 0);
+			IN_MemWrite		 		: in std_logic;
+			IN_MemRead				: in std_logic;
 			IN_Protect_Free 		: in std_logic;
 			IN_PS_W_EN 				: in std_logic;
 
@@ -200,6 +206,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			OUT_Res2				: out std_logic_vector(31 downto 0);
 			OUT_MUX_RegDst_Out		: out std_logic_vector(2 downto 0);
 			OUT_DST_10_8			: out std_logic_vector(2 downto 0);
+			OUT_MemWrite		 	: out std_logic;
+			OUT_MemRead				: out std_logic;
 			OUT_Protect_Free 		: out std_logic;
 			OUT_PS_W_EN 			: out std_logic
 		);
@@ -239,8 +247,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			S			: in  std_logic_vector(3 DOWNTO 0);
 			A,B			: in  std_logic_vector(n-1 DOWNTO 0);
 			F			: out std_logic_vector(n-1 DOWNTO 0);
-			Cout			: out std_logic;
-			Flags			: out std_logic_vector(3 DOWNTO 0)
+			Cout		: out std_logic;
+			Flags		: out std_logic_vector(3 DOWNTO 0)
 		);
 
 	end component;
@@ -332,6 +340,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal ID_EX_Inst_Extended_Out	: std_logic_vector(31 downto 0);
 	signal ID_EX_DST_10_8_Out		: std_logic_vector(2 downto 0);
 	signal ID_EX_Rdata2_Prop_Out	: std_logic_vector(31 downto 0);
+	signal ID_EX_MemWrite_Out		: std_logic;
+	signal ID_EX_MemRead_Out		: std_logic;
 	signal ID_EX_Protect_Free_Out	: std_logic;
 	signal ID_EX_PS_W_EN_Out		: std_logic;
 
@@ -353,6 +363,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal EX_MEM_Res2_Out			: std_logic_vector(31 downto 0);
 	signal EX_MEM_RegDst_Out		: std_logic_vector(2 downto 0);
 	signal EX_MEM_DST_10_8_Out		: std_logic_vector(2 downto 0);
+	signal EX_MEM_MemWrite_Out		: std_logic;
+	signal EX_MEM_MemRead_Out		: std_logic;
 	signal EX_MEM_Protect_Free_Out	: std_logic;
 	signal EX_MEM_PS_W_EN_Out		: std_logic;
 
@@ -370,7 +382,6 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal dummy_32bits				: std_logic_vector(31 downto 0); -- It's used always to fill the 8X1 ALU operands MUX
 
 	signal Prot_Reg_isProtected		: std_logic;
-	signal MemWrite					: std_logic;
 	signal MemWrite_Final			: std_logic;
 
 	signal Memory_Data				: std_logic_vector(31 downto 0);
@@ -404,9 +415,9 @@ begin
 	ID_EX		: ID_EX_Pipe_Reg port map(clk,reset,WB_Ctrl_Signal(0),WB_Ctrl_Signal(2),WB_Ctrl_Signal(1),
 						EX_Ctrl_Signal(3),EX_Ctrl_Signal(2),CCR_Write_Ctrl_Signal,
 						OP1,OP2,IF_ID_Inst_Out(7 downto 5),IF_ID_Inst_Out(4 downto 2),IF_ID_Inst_Out(15 downto 11),
-						IF_ID_Inst_Out(10 downto 8),Rdata1,M_Ctrl_Signal(1),M_Ctrl_Signal(0),ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
+						IF_ID_Inst_Out(10 downto 8),Rdata1,M_Ctrl_Signal(3),M_Ctrl_Signal(2),M_Ctrl_Signal(1),M_Ctrl_Signal(0),ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
 						ID_EX_ALUOp_Out,ID_EX_RegDst_Out,ID_EX_CCR_Write_Out,ID_EX_OP1_Out,ID_EX_OP2_Out,
-						ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_Opcode_Out,ID_EX_DST_10_8_Out,ID_EX_Rdata2_Prop_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out);
+						ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_Opcode_Out,ID_EX_DST_10_8_Out,ID_EX_Rdata2_Prop_Out,ID_EX_MemWrite_Out,ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out);
 
 	ALU_CTRL	: ALU_Controller port map(ID_EX_Opcode_Out,ID_EX_ALUOp_Out,ALU_Sel_Bits);
 
@@ -433,9 +444,9 @@ begin
 	OVF_Flag_Buffer	: my_DFF_reset0 port map(ALU_Flags_Out(3),clk,reset,ID_EX_CCR_Write_Out(3),CCR(3));
 
 	EX_MEM		: EX_MEM_Pipe_Reg port map(clk,reset,ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,ID_EX_Rdata2_Prop_Out,
-						ALU_Res1,dummy_ALU_Res2,RegDst_MUX_Out,ID_EX_DST_10_8_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,
+						ALU_Res1,dummy_ALU_Res2,RegDst_MUX_Out,ID_EX_DST_10_8_Out,ID_EX_MemWrite_Out,ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,
 						EX_MEM_RegWrite2_Out,EX_MEM_Rdata2_Prop_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,
-						EX_MEM_DST_10_8_Out,EX_MEM_Protect_Free_Out,EX_MEM_PS_W_EN_Out);
+						EX_MEM_DST_10_8_Out,EX_MEM_MemWrite_Out,EX_MEM_MemRead_Out,EX_MEM_Protect_Free_Out,EX_MEM_PS_W_EN_Out);
 
 	MEM_WB		: MEM_WB_Pipe_Reg port map(clk,reset,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
 						EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,dummy_MeM_Out,EX_MEM_DST_10_8_Out,
@@ -446,9 +457,9 @@ begin
 	PSR			: ProtectStatusRegister port map(RST=>reset, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>ALU_Res1, 
 						Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected);
 
-	MemWrite_Final <= not(Prot_Reg_isProtected) AND MemWrite;
+	MemWrite_Final <= not(Prot_Reg_isProtected) AND EX_MEM_MemWrite_Out;
 
 	Data_Mem	: Data_Memory port map(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_Final,
-										Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>'0',Mem_Out=>Memory_Out);
+										Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>EX_MEM_MemRead_Out,Mem_Out=>Memory_Out);
 
 end Pipeline_Integration_arch;
