@@ -42,6 +42,7 @@ begin
 	ELSE  "1100" WHEN opcode = "01110"
 	ELSE  "1100" WHEN opcode = "01111"
 	ELSE  "1000" WHEN opcode = "10000"
+	ELSE  "1001" WHEN opcode = "10001"
 	ELSE  "0000";
 
 	WB <= "000" WHEN IsInstIN = '0'
@@ -61,6 +62,7 @@ begin
 	ELSE  "100" WHEN opcode = "01101"
 	ELSE  "100" WHEN opcode = "01110"
 	ELSE  "100" WHEN opcode = "01111"
+	ELSE  "100" WHEN opcode = "10001"
 	ELSE  "000";
 
 	--OVF CF NF ZF
