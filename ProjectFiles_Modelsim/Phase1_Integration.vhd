@@ -5,10 +5,10 @@ USE IEEE.numeric_std.all;
 entity Phase1_Integration is
 
 	port(
-		clk	: in std_logic;
-		reset	: in std_logic
+		clk		: in std_logic;
+		reset	: in std_logic;
 		INPORT	: in std_logic_vector(31 downto 0);
-		OUTPORT	: out std_logic_vector(31 downto 0);
+		OUTPORT	: out std_logic_vector(31 downto 0)
 	);
 
 end entity;
@@ -20,8 +20,8 @@ Architecture Arch1 of Phase1_Integration is
 		port(
 			enable		: in std_logic;
 			reset		: in std_logic;
-			clk		: in std_logic;
-			PC		: out std_logic_vector(31 downto 0)
+			clk			: in std_logic;
+			PC			: out std_logic_vector(31 downto 0)
 		);
 
 	end component;
@@ -105,32 +105,30 @@ Architecture Arch1 of Phase1_Integration is
 			IN_WB_MemToReg		: in std_logic;
 			IN_WB_RegWrite1		: in std_logic;
 			IN_WB_RegWrite2		: in std_logic;
-			IN_EX_ALUSrc1		: in std_logic;
-			IN_EX_ALUSrc2		: in std_logic;
 			IN_EX_ALUOp		: in std_logic;
 			IN_EX_RegDst		: in std_logic;
 			IN_EX_CCR_Write		: in std_logic_vector(3 downto 0);
-			IN_RData1		: in std_logic_vector(31 downto 0);
-			IN_RData2		: in std_logic_vector(31 downto 0);
+			IN_OP1			: in std_logic_vector(31 downto 0);
+			IN_OP2			: in std_logic_vector(31 downto 0);
 			IN_DST_7_5		: in std_logic_vector(2 downto 0);
 			IN_DST_4_2		: in std_logic_vector(2 downto 0);
 			IN_OPcode		: in std_logic_vector(4 downto 0);
-			IN_Immediate_Value	: in std_logic_vector(31 downto 0);
+			IN_DST_10_8		: in std_logic_vector(2 downto 0);
+			IN_Rdata2_Propagated	: in std_logic_vector(31 downto 0);
 			OUT_WB_MemToReg		: out std_logic;
 			OUT_WB_RegWrite1	: out std_logic;
 			OUT_WB_RegWrite2	: out std_logic;	
-			OUT_EX_ALUSrc1		: out std_logic;
-			OUT_EX_ALUSrc2		: out std_logic;
 			OUT_EX_ALUOp		: out std_logic;
 			OUT_EX_RegDst		: out std_logic;
 			OUT_EX_CCR_Write	: out std_logic_vector(3 downto 0);
-			OUT_RData1		: out std_logic_vector(31 downto 0);
-			OUT_RData2		: out std_logic_vector(31 downto 0);
+			OUT_OP1			: out std_logic_vector(31 downto 0);
+			OUT_OP2			: out std_logic_vector(31 downto 0);
 			OUT_DST_7_5		: out std_logic_vector(2 downto 0);
 			OUT_DST_4_2		: out std_logic_vector(2 downto 0);
 			OUT_OPcode		: out std_logic_vector(4 downto 0);
-			Out_Immediate_Value	: out std_logic_vector(31 downto 0)
-		);
+			OUT_DST_10_8		: out std_logic_vector(2 downto 0);
+			OUT_Rdata2_Propagated	: out std_logic_vector(31 downto 0)
+	);
 
 	end component;
 
@@ -177,14 +175,20 @@ Architecture Arch1 of Phase1_Integration is
 			IN_WB_MemToReg		: in std_logic;
 			IN_WB_RegWrite1		: in std_logic;
 			IN_WB_RegWrite2		: in std_logic;
+			IN_Rdata2_Propagated	: in std_logic_vector(31 downto 0);
 			IN_Res1			: in std_logic_vector(31 downto 0);
+			IN_Res2			: in std_logic_vector(31 downto 0);
 			IN_MUX_RegDst_Out	: in std_logic_vector(2 downto 0);
+			IN_DST_10_8		: in std_logic_vector(2 downto 0);
 
 			OUT_WB_MemToReg		: out std_logic;
 			OUT_WB_RegWrite1	: out std_logic;
 			OUT_WB_RegWrite2	: out std_logic;	
+			OUT_Rdata2_Propagated	: out std_logic_vector(31 downto 0);
 			OUT_Res1		: out std_logic_vector(31 downto 0);
-			OUT_MUX_RegDst_Out	: out std_logic_vector(2 downto 0)
+			OUT_Res2		: out std_logic_vector(31 downto 0);
+			OUT_MUX_RegDst_Out	: out std_logic_vector(2 downto 0);
+			OUT_DST_10_8		: out std_logic_vector(2 downto 0)
 		);
 
 	end component;
@@ -196,16 +200,21 @@ Architecture Arch1 of Phase1_Integration is
 			IN_WB_MemToReg		: in std_logic;
 			IN_WB_RegWrite1		: in std_logic;
 			IN_WB_RegWrite2		: in std_logic;
+			--IN_WB_Pout		: in std_logic; Later to be implemented (rekhma 3ashan hazawed control signal hato3od te propagate fe kolo
 			IN_Res1			: in std_logic_vector(31 downto 0);
+			IN_Res2			: in std_logic_vector(31 downto 0);
 			IN_MUX_RegDst_Out	: in std_logic_vector(2 downto 0);
 			IN_MeM_Out		: in std_logic_vector(31 downto 0);
+			IN_DST_10_8		: in std_logic_vector(2 downto 0);
 
 			OUT_WB_MemToReg		: out std_logic;
 			OUT_WB_RegWrite1	: out std_logic;
 			OUT_WB_RegWrite2	: out std_logic;	
 			OUT_Res1		: out std_logic_vector(31 downto 0);
+			OUT_Res2		: out std_logic_vector(31 downto 0);
 			OUT_MUX_RegDst_Out	: out std_logic_vector(2 downto 0);
-			OUT_MeM_Out		: out std_logic_vector(31 downto 0)
+			OUT_MeM_Out		: out std_logic_vector(31 downto 0);
+			OUT_DST_10_8		: out std_logic_vector(2 downto 0)
 		);
 
 	end component;
@@ -255,71 +264,71 @@ Architecture Arch1 of Phase1_Integration is
 
 	end component;
 
+	
+	signal PC_Address 				: std_logic_vector(31 downto 0);
+	signal IC_Instruction			: std_logic_vector(15 downto 0);
+	signal IC_Inst_Extended			: std_logic_vector(31 downto 0);
 
+	signal IF_ID_PC_Out				: std_logic_vector(31 downto 0);
+	signal IF_ID_Inst_Out			: std_logic_vector(15 downto 0);
+	signal IF_ID_INPORT_OUT			: std_logic_vector(31 downto 0);
 
-	signal PC_Address 		: std_logic_vector(31 downto 0);
-	signal IC_Instruction		: std_logic_vector(15 downto 0);
-	signal IC_Inst_Extended		: std_logic_vector(31 downto 0);
-
-	signal IF_ID_PC_Out		: std_logic_vector(31 downto 0);
-	signal IF_ID_Inst_Out		: std_logic_vector(15 downto 0);
-	signal IF_ID_INPORT_OUT		: std_logic_vector(31 downto 0);
-
-	signal IsInstIn_Buff_Out	: std_logic;
-	signal IsInstOut_Ctrl_Out	: std_logic;
+	signal IsInstIn_Buff_Out		: std_logic;
+	signal IsInstOut_Ctrl_Out		: std_logic;
 	signal CCR_Write_Ctrl_Signal	: std_logic_vector(3 downto 0);
-	signal EX_Ctrl_Signal		: std_logic_vector(3 downto 0);
-	signal WB_Ctrl_Signal		: std_logic_vector(2 downto 0);
-	signal Rdata1,Rdata2		: std_logic_vector(31 downto 0);
-	signal OP1,OP2			: std_logic_vector(31 downto 0);
+	signal EX_Ctrl_Signal			: std_logic_vector(3 downto 0);
+	signal WB_Ctrl_Signal			: std_logic_vector(2 downto 0);
+	signal Rdata1,Rdata2			: std_logic_vector(31 downto 0);
+	signal OP1,OP2					: std_logic_vector(31 downto 0);
 
-	signal ID_EX_MemToReg_Out	: std_logic;
-	signal ID_EX_RegWrite1_Out	: std_logic;
-	signal ID_EX_RegWrite2_Out	: std_logic;
-	signal ID_EX_ALUOp_Out		: std_logic;
-	signal ID_EX_RegDst_Out		: std_logic;
-	signal ID_EX_CCR_Write_Out	: std_logic_vector(3 downto 0);
-	signal ID_EX_OP1_Out		: std_logic_vector(31 downto 0);
-	signal ID_EX_OP2_Out		: std_logic_vector(31 downto 0);
-	signal ID_EX_Rdata1_Out		: std_logic_vector(31 downto 0);
-	signal ID_EX_Rdata2_Out		: std_logic_vector(31 downto 0);
-	signal ID_EX_DST_7_5_Out	: std_logic_vector(2 downto 0);
-	signal ID_EX_DST_4_2_Out	: std_logic_vector(2 downto 0);
-	signal ID_EX_Opcode_Out		: std_logic_vector(4 downto 0);
+	signal ID_EX_MemToReg_Out		: std_logic;
+	signal ID_EX_RegWrite1_Out		: std_logic;
+	signal ID_EX_RegWrite2_Out		: std_logic;
+	signal ID_EX_ALUOp_Out			: std_logic;
+	signal ID_EX_RegDst_Out			: std_logic;
+	signal ID_EX_CCR_Write_Out		: std_logic_vector(3 downto 0);
+	signal ID_EX_OP1_Out			: std_logic_vector(31 downto 0);
+	signal ID_EX_OP2_Out			: std_logic_vector(31 downto 0);
+	signal ID_EX_Rdata1_Out			: std_logic_vector(31 downto 0);
+	signal ID_EX_Rdata2_Out			: std_logic_vector(31 downto 0);
+	signal ID_EX_DST_7_5_Out		: std_logic_vector(2 downto 0);
+	signal ID_EX_DST_4_2_Out		: std_logic_vector(2 downto 0);
+	signal ID_EX_Opcode_Out			: std_logic_vector(4 downto 0);
 	signal ID_EX_Inst_Extended_Out	: std_logic_vector(31 downto 0);
-	signal ID_EX_DST_10_8_Out	: std_logic_vector(2 downto 0);
+	signal ID_EX_DST_10_8_Out		: std_logic_vector(2 downto 0);
 	signal ID_EX_Rdata2_Prop_Out	: std_logic_vector(31 downto 0);
 
-	signal ALU_Sel_Bits		: std_logic_vector(4 downto 0);
-	signal dummy1,dummy2		: std_logic_vector(31 downto 0);	
-	signal Operand1,Operand2	: std_logic_vector(31 downto 0);		
-	signal RegDst_MUX_Out		: std_logic_vector(2 downto 0);
-	signal ALU_Res1			: std_logic_vector(31 downto 0);
-	signal ALU_Cout			: std_logic;
-	signal ALU_Flags_Out		: std_logic_vector(3 downto 0);
-	signal CCR			: std_logic_vector(3 downto 0); 
+	signal ALU_Sel_Bits				: std_logic_vector(4 downto 0);
+	signal Operand1,Operand2		: std_logic_vector(31 downto 0);		
+	signal RegDst_MUX_Out			: std_logic_vector(2 downto 0);
+	signal ALU_Res1					: std_logic_vector(31 downto 0);
+	signal ALU_Cout					: std_logic;
+	signal ALU_Flags_Out			: std_logic_vector(3 downto 0);
+	signal CCR						: std_logic_vector(3 downto 0); 
 
-	signal EX_MEM_MemToReg_Out	: std_logic;
-	signal EX_MEM_RegWrite1_Out	: std_logic;
-	signal EX_MEM_RegWrite2_Out	: std_logic;
+	signal FSrc1,FSrc2				: std_logic_vector(2 downto 0);
+
+	signal EX_MEM_MemToReg_Out		: std_logic;
+	signal EX_MEM_RegWrite1_Out		: std_logic;
+	signal EX_MEM_RegWrite2_Out		: std_logic;
 	signal EX_MEM_Rdata2_Prop_Out	: std_logic_vector(31 downto 0);
-	signal EX_MEM_Res1_Out		: std_logic_vector(31 downto 0);
-	signal EX_MEM_Res2_Out		: std_logic_vector(31 downto 0);
-	signal EX_MEM_RegDst_Out	: std_logic_vector(2 downto 0);
-	signal EX_MEM_DST_10_8_Out	: std_logic_vector(2 downto 0);
+	signal EX_MEM_Res1_Out			: std_logic_vector(31 downto 0);
+	signal EX_MEM_Res2_Out			: std_logic_vector(31 downto 0);
+	signal EX_MEM_RegDst_Out		: std_logic_vector(2 downto 0);
+	signal EX_MEM_DST_10_8_Out		: std_logic_vector(2 downto 0);
 
-	signal MEM_WB_MemToReg_Out	: std_logic;
-	signal MEM_WB_RegWrite1_Out	: std_logic;
-	signal MEM_WB_RegWrite2_Out	: std_logic;
-	signal MEM_WB_Res1_Out		: std_logic_vector(31 downto 0);
-	signal MEM_WB_Res2_Out		: std_logic_vector(31 downto 0);
-	signal MEM_WB_RegDst_Out	: std_logic_vector(2 downto 0);
-	signal MEM_WB_MeM_Out_Out	: std_logic_vector(31 downto 0);
-	signal MEM_WB_DST_10_8_Out	: std_logic_vector(2 downto 0);
+	signal MEM_WB_MemToReg_Out		: std_logic;
+	signal MEM_WB_RegWrite1_Out		: std_logic;
+	signal MEM_WB_RegWrite2_Out		: std_logic;
+	signal MEM_WB_Res1_Out			: std_logic_vector(31 downto 0);
+	signal MEM_WB_Res2_Out			: std_logic_vector(31 downto 0);
+	signal MEM_WB_RegDst_Out		: std_logic_vector(2 downto 0);
+	signal MEM_WB_MeM_Out_Out		: std_logic_vector(31 downto 0);
+	signal MEM_WB_DST_10_8_Out		: std_logic_vector(2 downto 0);
 
-	signal dummy_MeM_Out		: std_logic_vector(31 downto 0);
-	signal dummy_ALU_Res2		: std_logic_vector(31 downto 0);
-	signal dummy_32bits		: std_logic_vector(31 downto 0); -- It's used always to fill the 8X1 ALU operands MUX
+	signal dummy_MeM_Out			: std_logic_vector(31 downto 0);
+	signal dummy_ALU_Res2			: std_logic_vector(31 downto 0);
+	signal dummy_32bits				: std_logic_vector(31 downto 0); -- It's used always to fill the 8X1 ALU operands MUX
 	
 	
 begin
@@ -354,14 +363,15 @@ begin
 
 	ALU_CTRL	: ALU_Controller port map(ID_EX_Opcode_Out,ID_EX_ALUOp_Out,ALU_Sel_Bits);
 
-	FU		: Forwarding_Unit port map();
+	FU		: Forwarding_Unit port map(ID_EX_DST_10_8_Out,ID_EX_DST_7_5_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
+						EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
+						MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,MEM_WB_MemToReg_Out,FSrc1,FSrc2);
 	
-	--Operand1_MUX	: MUX_2X1_Generic port map(ID_EX_Rdata1_Out,ID_EX_Inst_Extended_Out,ID_EX_ALUSrc1_Out,Operand1);
 	Operand1_MUX	: MUX_8X1_Generic port map(ID_EX_OP1_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,MEM_WB_Res1_Out,MEM_WB_Res2_Out,
-						MEM_WB_MeM_Out_Out,dummy_32bits,dummy_32bits,--selector,Operand1);
+						MEM_WB_MeM_Out_Out,dummy_32bits,dummy_32bits,FSrc1,Operand1);
 
 	Operand2_MUX	: MUX_8X1_Generic port map(ID_EX_OP2_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,MEM_WB_Res1_Out,MEM_WB_Res2_Out,
-						MEM_WB_MeM_Out_Out,dummy_32bits,dummy_32bits,--selector,Operand2);
+						MEM_WB_MeM_Out_Out,dummy_32bits,dummy_32bits,FSrc2,Operand2);
 
 	DST_MUX		: MUX_2X1_Generic generic map(3) port map(ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_RegDst_Out,RegDst_MUX_Out);
 
@@ -377,7 +387,7 @@ begin
 
 	EX_MEM		: EX_MEM_Pipe_Reg port map(clk,reset,ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,ID_EX_Rdata2_Prop_Out,
 						ALU_Res1,dummy_ALU_Res2,RegDst_MUX_Out,ID_EX_DST_10_8_Out,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,
-						EX_MEM_RegWrite2_Out,EX_MEM_Rdata2_Prop_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out
+						EX_MEM_RegWrite2_Out,EX_MEM_Rdata2_Prop_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,
 						EX_MEM_DST_10_8_Out);
 
 	MEM_WB		: MEM_WB_Pipe_Reg port map(clk,reset,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
