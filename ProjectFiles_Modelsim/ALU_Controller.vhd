@@ -16,7 +16,7 @@ Architecture Arch1 of ALU_Controller is
  
 begin
 
-	--ALUOp is not used????????
+	--ALUOp is not used ALEYYYYY????????
 	ALU_SEL <= "00000" WHEN OPcode = "00000" --F=0 NOP
 	ELSE "01110" WHEN OPcode = "00001"  -- F=not A
 	ELSE "00011" WHEN OPcode = "00010"  -- F=-A
