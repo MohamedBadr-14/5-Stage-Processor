@@ -23,8 +23,12 @@ entity ID_EX_Pipe_Reg is
 		IN_OPcode				: in std_logic_vector(4 downto 0);
 		IN_DST_10_8				: in std_logic_vector(2 downto 0);
 		IN_Rdata2_Propagated	: in std_logic_vector(31 downto 0);
+		IN_MemWrite		 		: in std_logic;
+		IN_MemRead				: in std_logic;
 		IN_Protect_Free 		: in std_logic;
 		IN_PS_W_EN 				: in std_logic;
+		IN_PC_Address			: in std_logic_vector(31 downto 0);
+		IN_Rdst_Val				: in std_logic_vector(31 downto 0);
 		OUT_WB_MemToReg			: out std_logic;
 		OUT_WB_RegWrite1		: out std_logic;
 		OUT_WB_RegWrite2		: out std_logic;	
@@ -38,8 +42,12 @@ entity ID_EX_Pipe_Reg is
 		OUT_OPcode				: out std_logic_vector(4 downto 0);
 		OUT_DST_10_8			: out std_logic_vector(2 downto 0);
 		OUT_Rdata2_Propagated	: out std_logic_vector(31 downto 0);
+		OUT_MemWrite		 	: out std_logic;
+		OUT_MemRead				: out std_logic;
 		OUT_Protect_Free 		: out std_logic;
-		OUT_PS_W_EN 			: out std_logic	
+		OUT_PS_W_EN 			: out std_logic;
+		OUT_PC_Address			: out std_logic_vector(31 downto 0);
+		OUT_Rdst_Val				: out std_logic_vector(31 downto 0)	
 	);
 
 end entity;
@@ -66,8 +74,12 @@ begin
 			OUT_EX_CCR_Write <= (others => '0');
 			OUT_DST_10_8 <= (others => '0');
 			OUT_Rdata2_Propagated <= (others => '0');
+			OUT_MemWrite <= '0';
+			OUT_MemRead <= '0';
 			OUT_Protect_Free <= '0';
 			OUT_PS_W_EN <= '0';
+			OUT_PC_Address <= (others => '0');
+			OUT_Rdst_Val <= (others => '0');
 		elsif rising_edge(clk) then
 			OUT_WB_MemToReg <= IN_WB_MemToReg;		
 			OUT_WB_RegWrite1 <=IN_WB_RegWrite1;	
@@ -82,8 +94,12 @@ begin
 			OUT_EX_CCR_Write <= IN_EX_CCR_Write;
 			OUT_DST_10_8 <= IN_DST_10_8;
 			OUT_Rdata2_Propagated <= IN_Rdata2_Propagated;
+			OUT_MemWrite <= IN_MemWrite;
+			OUT_MemRead <= IN_MemRead;
 			OUT_Protect_Free <= IN_Protect_Free;
 			OUT_PS_W_EN <= IN_PS_W_EN;
+			OUT_Rdst_Val <= IN_Rdst_Val;
+			OUT_PC_Address <= IN_PC_Address;
 		end if;
 
 	end process;

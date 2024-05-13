@@ -58,17 +58,17 @@ begin
 	begin
 
 		if (IN_EX_MEM_RegWrite1 = '1' and IN_ID_EX_Src2 = IN_EX_MEM_RegDst) then
-			ForwardSrc1 <= "001";
+			ForwardSrc2 <= "001";
 		elsif (IN_MEM_WB_RegWrite1 = '1' and IN_ID_EX_Src2 = IN_MEM_WB_RegDst and IN_MEM_WB_MemToReg = '0') then
-			ForwardSrc1 <= "011";
+			ForwardSrc2 <= "011";
 		elsif (IN_MEM_WB_RegWrite1 = '1' and IN_ID_EX_Src2 = IN_MEM_WB_RegDst and IN_MEM_WB_MemToReg = '1') then
-			ForwardSrc1 <= "101";
+			ForwardSrc2 <= "101";
 		elsif (IN_EX_MEM_RegWrite2 = '1' and IN_ID_EX_Src2 = IN_EX_MEM_Src_10_8) then
-			ForwardSrc1 <= "010"; 
+			ForwardSrc2 <= "010"; 
 		elsif (IN_MEM_WB_RegWrite2 = '1' and IN_ID_EX_Src2 = IN_MEM_WB_Src_10_8) then
-			ForwardSrc1 <= "100"; 
+			ForwardSrc2 <= "100"; 
 		else 
-			ForwardSrc1 <= "000";
+			ForwardSrc2 <= "000";
 		end if;
 		
 
