@@ -428,8 +428,8 @@ begin
 						MEM_WB_RegDst_Out,MEM_WB_MeM_Out_Out,MEM_WB_DST_10_8_Out);
 	
 
-	PSR	: ProtectStatusRegister port map(RST=>reset, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>ALU_Res1, 
-										Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected);
+	PSR			: ProtectStatusRegister port map(RST=>reset, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>ALU_Res1, 
+						Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected);
 
 	MemWrite_Final <= not(Prot_Reg_isProtected) AND MemWrite;
 
