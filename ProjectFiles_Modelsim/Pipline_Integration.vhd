@@ -312,7 +312,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal CCR_Write_Ctrl_Signal	: std_logic_vector(3 downto 0);
 	signal EX_Ctrl_Signal			: std_logic_vector(3 downto 0);
 	signal WB_Ctrl_Signal			: std_logic_vector(2 downto 0);
-	signal M_Ctrl_Signal			: std_logic_vector(1 downto 0);
+	signal M_Ctrl_Signal			: std_logic_vector(3 downto 0);
 	signal Rdata1,Rdata2			: std_logic_vector(31 downto 0);
 	signal OP1,OP2					: std_logic_vector(31 downto 0);
 
