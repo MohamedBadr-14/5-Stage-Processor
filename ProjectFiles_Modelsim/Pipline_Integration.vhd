@@ -102,8 +102,29 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			EX 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : ALUOp / bit2 : RegDst / bit1 : ALUSrc1 / bit0 : ALUSrc2
 			WB 			: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2/ bit0 : MemToReg
 			M 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : MemWrite / bit2 : MemRead / bit1 : Protect_Free / bit0 : PS_W_EN
-			IsInstOut	: OUT std_logic
+			IsInstOut	: OUT std_logic;
+			Cond_Branch : out std_logic;
+			unCond_Branch : out std_logic;
+			PC_Selector : out std_logic
     	);
+
+	end component;
+
+	component Hazard_Detection_Unit is
+
+		port(
+        Cond_Branch : in std_logic;
+        unCond_Branch : in std_logic;
+        PC_Selector_From_Mem : in std_logic;
+        Prediction : in std_logic;
+        Cond_Branch_From_EX : in std_logic;
+        Prev_Prediction : in std_logic;
+        Zero_Flag : in std_logic;
+        Should_Branch : out std_logic;
+        Should_Not_Branch : out std_logic;
+        unCond_or_Prediction : out std_logic;
+        OUT_PC_Selector_From_Mem : out std_logic;
+    );
 
 	end component;
 
@@ -357,6 +378,13 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal IF_ID_Inst_Out			: std_logic_vector(15 downto 0);
 	signal IF_ID_INPORT_OUT			: std_logic_vector(31 downto 0);
 
+	--controller signals
+
+	signal Cond_Branch				: std_logic := '0';
+	signal unCond_Branch_from_ID	: std_logic := '0';
+	signal PC_Selector_from_MEM		: std_logic := '0';
+
+	
 	signal unCond_or_Pred			: std_logic := '0';
 	signal Should_Branch			: std_logic := '0';
 	signal Should_Not_Branch		: std_logic := '0';
@@ -464,7 +492,7 @@ begin
 
 	Imm_Flag_Buffer	: my_DFF port map(IsInstOut_Ctrl_Out,clk,reset,IsInstIn_Buff_Out);
 	
-	ID_Controller 	: Controller port map(IF_ID_Inst_Out(15 downto 11),IsInstIn_Buff_Out,CCR_Write_Ctrl_Signal,EX_Ctrl_Signal,WB_Ctrl_Signal,M_Ctrl_Signal,IsInstOut_Ctrl_Out);
+	ID_Controller 	: Controller port map(IF_ID_Inst_Out(15 downto 11),IsInstIn_Buff_Out,CCR_Write_Ctrl_Signal,EX_Ctrl_Signal,WB_Ctrl_Signal,M_Ctrl_Signal,IsInstOut_Ctrl_Out , Cond_Branch , unCond_Branch , PC_Selector);
 
 	Reg_File	: Register_File port map(IF_ID_Inst_Out(10 downto 8),IF_ID_Inst_Out(7 downto 5),MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,
 						MEM_WB_Res1_Out,MEM_WB_Res2_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
@@ -526,4 +554,5 @@ begin
 	Data_Mem	: Data_Memory port map(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_Final,
 										Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>EX_MEM_MemRead_Out,Mem_Out=>Memory_Out);
 
+	-- Hazard_Det_Unit   : Hazard_Detection_Unit port map 
 end Pipeline_Integration_arch;

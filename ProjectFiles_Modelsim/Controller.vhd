@@ -11,7 +11,10 @@ entity Controller is
 		EX 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : ALUOp / bit2 : RegDst / bit1 : ALUSrc1 / bit0 : ALUSrc2
 		WB 			: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2/ bit0 : MemToReg
 		M 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : MemWrite / bit2 : MemRead / bit1 : Protect_Free / bit0 : PS_W_EN
-		IsInstOut	: OUT std_logic
+		IsInstOut	: OUT std_logic;
+		Cond_Branch : out std_logic;
+		unCond_Branch : out std_logic;
+		PC_Selector : out std_logic
     	);
 
 end entity;
@@ -23,6 +26,15 @@ begin
 	-- it takes a 1 clk cycle delay to be an input to the next decode stage where 0 CTRL signals is produced 
 	IsInstOut<= '0' WHEN opcode = "10001" --LDM
 	ELSE '1';
+
+	Cond_Branch <= '1' When opcode = "11000"
+	else '0';
+	
+	unCond_Branch <= '1' when (opcode = "11001" or opcode = "11010" or opcode = "11011" or opcode = "11100") 
+	else '0';
+
+	PC_Selector <= '1' when (opcode = "11011" or opcode = "11100")
+	else '0';
 
 	EX <= "0000" WHEN IsInstIn = '0'
 	ELSE  "0000" WHEN opcode = "00000"
