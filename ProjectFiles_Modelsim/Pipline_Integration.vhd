@@ -285,10 +285,10 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			IN_WB_RegWrite1		: in std_logic;
 			IN_WB_RegWrite2		: in std_logic;
 			--IN_WB_Pout		: in std_logic; Later to be implemented (rekhma 3ashan hazawed control signal hato3od te propagate fe kolo
-			IN_MUX_RegDst_Out	: in std_logic_vector(2 downto 0);
+			IN_MeM_Out			: in std_logic_vector(31 downto 0);
 			IN_Res1				: in std_logic_vector(31 downto 0);
 			IN_Res2				: in std_logic_vector(31 downto 0);
-			IN_MeM_Out			: in std_logic_vector(31 downto 0);
+			IN_MUX_RegDst_Out	: in std_logic_vector(2 downto 0);
 			IN_DST_10_8			: in std_logic_vector(2 downto 0);
 
 			OUT_WB_MemToReg		: out std_logic;
@@ -495,8 +495,8 @@ begin
 	
 	ID_Controller 	: Controller port map(IF_ID_Inst_Out(15 downto 11),IsInstIn_Buff_Out,CCR_Write_Ctrl_Signal,EX_Ctrl_Signal,WB_Ctrl_Signal,M_Ctrl_Signal,IsInstOut_Ctrl_Out , Cond_Branch , unCond_Branch , PC_Selector);
 
-	Reg_File	: Register_File port map(IF_ID_Inst_Out(10 downto 8),IF_ID_Inst_Out(7 downto 5),MEM_WB_DST_10_8_Out,MEM_WB_RegDst_Out,
-						MEM_WB_Res2_Out,MEM_WB_Res1_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
+	Reg_File	: Register_File port map(IF_ID_Inst_Out(10 downto 8),IF_ID_Inst_Out(7 downto 5),MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,
+						MEM_WB_Res1_Out,MEM_WB_Res2_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
 						reset,clk,Rdata1,Rdata2);
 
 	OP1_MUX		: MUX_2X1_Generic port map(Rdata1,IF_ID_INPORT_OUT,EX_Ctrl_Signal(1),OP1);
