@@ -35,7 +35,7 @@ begin
 			OUT_PC <= IN_PC;
 			OUT_Inst <= IN_Inst;
 			OUT_INPORT <= IN_INPORT;
-			OUT_inst_outRange <= IN_instr_outRange;
+			OUT_inst_outRange <= IN_inst_outRange;
 		end if;
 
 	end process;
