@@ -13,7 +13,7 @@ entity IF_ID_Pipe_Reg is
 		OUT_PC				: out std_logic_vector(31 downto 0);
 		OUT_Inst			: out std_logic_vector(15 downto 0);
 		OUT_INPORT			: out std_logic_vector(31 downto 0);
-		OUT_inst_outRange	: in std_logic
+		OUT_inst_outRange	: out std_logic
 	);
 
 end entity;
