@@ -7,6 +7,7 @@ add wave -position end  /pipeline_integration/Reg_File/Registers
 add wave -position end  sim:/pipeline_integration/Operand1
 add wave -position end  sim:/pipeline_integration/Operand2
 add wave -position end  sim:/pipeline_integration/ALU_Res1
+add wave -position end  sim:/pipeline_integration/ALU_Res2
 add wave -position end  sim:/pipeline_integration/MEM_WB_Res1_Out
 add wave -position end  sim:/pipeline_integration/MEM_WB_RegDst_Out
 add wave -position end  sim:/pipeline_integration/MEM_WB_RegWrite1_Out
@@ -19,7 +20,7 @@ mem load -filltype value -filldata 1010101010101010 -fillradix binary /pipeline_
 mem load -filltype value -filldata 1000100001000000 -fillradix binary /pipeline_integration/IC/inst_array(4)
 mem load -filltype value -filldata 1111111111111111 -fillradix binary /pipeline_integration/IC/inst_array(5)
 
-mem load -filltype value -filldata 0100000010100000 -fillradix binary /pipeline_integration/IC/inst_array(6)			
+mem load -filltype value -filldata 0100000101000000 -fillradix binary /pipeline_integration/IC/inst_array(6)			
 
 
 force -freeze sim:/pipeline_integration/clk 0 0, 1 {500 ps} -r {1 ns}
