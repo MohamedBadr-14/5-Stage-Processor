@@ -285,19 +285,19 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			IN_WB_RegWrite1		: in std_logic;
 			IN_WB_RegWrite2		: in std_logic;
 			--IN_WB_Pout		: in std_logic; Later to be implemented (rekhma 3ashan hazawed control signal hato3od te propagate fe kolo
+			IN_MUX_RegDst_Out	: in std_logic_vector(2 downto 0);
 			IN_Res1				: in std_logic_vector(31 downto 0);
 			IN_Res2				: in std_logic_vector(31 downto 0);
-			IN_MUX_RegDst_Out	: in std_logic_vector(2 downto 0);
 			IN_MeM_Out			: in std_logic_vector(31 downto 0);
 			IN_DST_10_8			: in std_logic_vector(2 downto 0);
 
 			OUT_WB_MemToReg		: out std_logic;
 			OUT_WB_RegWrite1	: out std_logic;
 			OUT_WB_RegWrite2	: out std_logic;	
+			OUT_MeM_Out			: out std_logic_vector(31 downto 0);
 			OUT_Res1			: out std_logic_vector(31 downto 0);
 			OUT_Res2			: out std_logic_vector(31 downto 0);
 			OUT_MUX_RegDst_Out	: out std_logic_vector(2 downto 0);
-			OUT_MeM_Out			: out std_logic_vector(31 downto 0);
 			OUT_DST_10_8		: out std_logic_vector(2 downto 0)
 		);
 
@@ -309,7 +309,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			Cin			: in  std_logic;
 			S			: in  std_logic_vector(3 DOWNTO 0);
 			A,B			: in  std_logic_vector(n-1 DOWNTO 0);
-			F			: out std_logic_vector(n-1 DOWNTO 0);
+			F1,F2		: out std_logic_vector(n-1 DOWNTO 0);
 			Cout		: out std_logic;
 			Flags		: out std_logic_vector(3 DOWNTO 0)
 		);
@@ -429,6 +429,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal Operand1,Operand2		: std_logic_vector(31 downto 0);		
 	signal RegDst_MUX_Out			: std_logic_vector(2 downto 0);
 	signal ALU_Res1					: std_logic_vector(31 downto 0);
+	signal ALU_Res2					: std_logic_vector(31 downto 0);
 	signal ALU_Cout					: std_logic;
 	signal ALU_Flags_Out			: std_logic_vector(3 downto 0);
 	signal CCR						: std_logic_vector(3 downto 0); 
@@ -494,8 +495,8 @@ begin
 	
 	ID_Controller 	: Controller port map(IF_ID_Inst_Out(15 downto 11),IsInstIn_Buff_Out,CCR_Write_Ctrl_Signal,EX_Ctrl_Signal,WB_Ctrl_Signal,M_Ctrl_Signal,IsInstOut_Ctrl_Out , Cond_Branch , unCond_Branch , PC_Selector);
 
-	Reg_File	: Register_File port map(IF_ID_Inst_Out(10 downto 8),IF_ID_Inst_Out(7 downto 5),MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,
-						MEM_WB_Res1_Out,MEM_WB_Res2_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
+	Reg_File	: Register_File port map(IF_ID_Inst_Out(10 downto 8),IF_ID_Inst_Out(7 downto 5),MEM_WB_DST_10_8_Out,MEM_WB_RegDst_Out,
+						MEM_WB_Res2_Out,MEM_WB_Res1_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
 						reset,clk,Rdata1,Rdata2);
 
 	OP1_MUX		: MUX_2X1_Generic port map(Rdata1,IF_ID_INPORT_OUT,EX_Ctrl_Signal(1),OP1);
@@ -525,7 +526,7 @@ begin
 
 	DST_MUX		: MUX_2X1_Generic generic map(3) port map(ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_RegDst_Out,RegDst_MUX_Out);
 
-	A_L_U		: ALU port map(ALU_Sel_Bits(0),ALU_Sel_Bits(4 downto 1),Operand1,Operand2,ALU_Res1,ALU_Cout,ALU_Flags_Out);
+	A_L_U		: ALU port map(ALU_Sel_Bits(0),ALU_Sel_Bits(4 downto 1),Operand1,Operand2,ALU_Res1,ALU_Res2,ALU_Cout,ALU_Flags_Out);
 
 	ZF_Flag_Buffer	: my_DFF_reset0 port map(ALU_Flags_Out(0),clk,reset,ID_EX_CCR_Write_Out(0),CCR(0));
 
@@ -536,23 +537,23 @@ begin
 	OVF_Flag_Buffer	: my_DFF_reset0 port map(ALU_Flags_Out(3),clk,reset,ID_EX_CCR_Write_Out(3),CCR(3));
 
 	EX_MEM		: EX_MEM_Pipe_Reg port map(clk,reset,ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,ID_EX_Rdata2_Prop_Out,
-						ALU_Res1,dummy_ALU_Res2,RegDst_MUX_Out,ID_EX_DST_10_8_Out,ID_EX_MemWrite_Out,ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,
-						EX_MEM_RegWrite2_Out,EX_MEM_Rdata2_Prop_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,
-						EX_MEM_DST_10_8_Out,EX_MEM_MemWrite_Out,EX_MEM_MemRead_Out,EX_MEM_Protect_Free_Out,EX_MEM_PS_W_EN_Out);
-
-	MEM_WB		: MEM_WB_Pipe_Reg port map(clk,reset,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
-						EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,dummy_MeM_Out,EX_MEM_DST_10_8_Out,
-						MEM_WB_MemToReg_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,MEM_WB_Res1_Out,MEM_WB_Res2_Out,
-						MEM_WB_RegDst_Out,MEM_WB_MeM_Out_Out,MEM_WB_DST_10_8_Out);
-	
+						ALU_Res1,ALU_Res2,RegDst_MUX_Out,ID_EX_DST_10_8_Out,ID_EX_MemWrite_Out,ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,
+						ID_EX_PS_W_EN_Out,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,EX_MEM_Rdata2_Prop_Out,
+						EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,EX_MEM_MemWrite_Out,EX_MEM_MemRead_Out,
+						EX_MEM_Protect_Free_Out,EX_MEM_PS_W_EN_Out);
 
 	PSR			: ProtectStatusRegister port map(RST=>reset, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>ALU_Res1, 
-						Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected);
+												Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected);
 
 	MemWrite_Final <= not(Prot_Reg_isProtected) AND EX_MEM_MemWrite_Out;
 
 	Data_Mem	: Data_Memory port map(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_Final,
 										Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>EX_MEM_MemRead_Out,Mem_Out=>Memory_Out);
+
+	MEM_WB		: MEM_WB_Pipe_Reg port map(clk,reset,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
+						dummy_MeM_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,
+						MEM_WB_MemToReg_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,MEM_WB_MeM_Out_Out,
+						MEM_WB_Res1_Out,MEM_WB_Res2_Out,MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out);
 
 	-- Hazard_Det_Unit   : Hazard_Detection_Unit port map 
 end Pipeline_Integration_arch;

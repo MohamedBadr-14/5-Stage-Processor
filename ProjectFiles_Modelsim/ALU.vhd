@@ -9,7 +9,7 @@ PORT(
 		Cin		:IN  STD_LOGIC;
 		S		:IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
 		A,B		:IN  STD_LOGIC_VECTOR(n-1 DOWNTO 0);
-		F		:OUT STD_LOGIC_VECTOR(n-1 DOWNTO 0);
+		F1,F2	:OUT STD_LOGIC_VECTOR(n-1 DOWNTO 0);
 		Cout	:OUT STD_LOGIC;
 		Flags	:OUT STD_LOGIC_VECTOR(3 DOWNTO 0)	--bit 3: Ovf, bit 2: Carryf, bit 1: Negf, bit 0: Zerof
 );
@@ -83,8 +83,9 @@ Flags(1) <=
  --Zero Flag
 Flags(0) <= '1' WHEN F_AUX = "00000000000000000000000000000000"
 			else '0';
-		
-F <= F_AUX;
+
+F1 <= F_AUX;
+F2 <= B;
 Cout <= Cout_AUX;
 
 end ALU_arch;
