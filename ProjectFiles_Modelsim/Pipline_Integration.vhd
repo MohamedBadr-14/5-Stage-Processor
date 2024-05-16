@@ -93,7 +93,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 		);
 	END component;
 
-	component Controller is
+	Component Controller is
 
 		port(
 			opcode 		: IN std_logic_vector(4 DOWNTO 0);
@@ -103,10 +103,11 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			WB 			: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2/ bit0 : MemToReg
 			M 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : MemWrite / bit2 : MemRead / bit1 : Protect_Free / bit0 : PS_W_EN
 			IsInstOut	: OUT std_logic;
-			Cond_Branch : out std_logic;
-			unCond_Branch : out std_logic;
-			PC_Selector : out std_logic;
-			Push_Pop_Ctrl : out std_logic_vector(1 downto 0)-- bit1 : Push/Pop / bit0 : SP_Enable
+			Cond_Branch : OUT std_logic;
+			unCond_Branch : OUT std_logic;
+			PC_Selector : OUT std_logic;
+			Push_Pop_Ctrl : OUT std_logic_vector(1 downto 0);-- bit1 : Push/Pop / bit0 : SP_Enable
+			Pout		: OUT std_logic
 			);
 	
 	end component;
@@ -425,6 +426,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal WB_Ctrl_Signal			: std_logic_vector(2 downto 0);
 	signal M_Ctrl_Signal			: std_logic_vector(3 downto 0);
 	signal P_P_Ctrl_Signal			: std_logic_vector(1 downto 0);
+	signal Pout_Ctrl_Signal			: std_logic;
 	signal Rdata1,Rdata2			: std_logic_vector(31 downto 0);
 	signal OP1,OP2					: std_logic_vector(31 downto 0);
 
@@ -526,7 +528,7 @@ begin
 	Imm_Flag_Buffer	: my_DFF port map(IsInstOut_Ctrl_Out,clk,reset,IsInstIn_Buff_Out);
 	
 	ID_Controller 	: Controller port map(IF_ID_Inst_Out(15 downto 11),IsInstIn_Buff_Out,CCR_Write_Ctrl_Signal,EX_Ctrl_Signal,WB_Ctrl_Signal,M_Ctrl_Signal,
-						IsInstOut_Ctrl_Out , Cond_Branch , unCond_Branch_from_ID , PC_Selector, P_P_Ctrl_Signal);
+						IsInstOut_Ctrl_Out , Cond_Branch , unCond_Branch_from_ID , PC_Selector, P_P_Ctrl_Signal, Pout_Ctrl_Signal);
 
 	Reg_File	: Register_File port map(IF_ID_Inst_Out(10 downto 8),IF_ID_Inst_Out(7 downto 5),MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,
 						MEM_WB_Res1_Out,MEM_WB_Res2_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
