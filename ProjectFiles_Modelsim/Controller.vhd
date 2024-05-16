@@ -14,7 +14,8 @@ entity Controller is
 		IsInstOut	: OUT std_logic;
 		Cond_Branch : out std_logic;
 		unCond_Branch : out std_logic;
-		PC_Selector : out std_logic
+		PC_Selector : out std_logic;
+		Push_Pop_Ctrl : out std_logic_vector(1 downto 0)-- bit1 : Push/Pop / bit0 : SP_Enable
     	);
 
 end entity;
@@ -105,5 +106,13 @@ begin
 	ELSE "0011" WHEN opcode = "10110" -- Protect
 	ELSE "1001" WHEN opcode = "10111" -- Free
 	ELSE "0000";
+
+
+	Push_Pop_Ctrl <= "01" WHEN opcode = "10010" -- Push
+	ELSE 			 "11" WHEN opcode = "10011" -- Pop
+	ELSE 			 "01" WHEN opcode = "11010" -- Call
+	ELSE 			 "11" WHEN opcode = "11011" -- RET
+	ELSE       		 "11" WHEN opcode = "11100" -- RTI
+	ELSE "00";
    
 end Arch1;
