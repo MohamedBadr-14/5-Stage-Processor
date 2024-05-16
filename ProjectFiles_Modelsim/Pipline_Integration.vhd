@@ -511,7 +511,7 @@ begin
 
 	PC_Circuit_label : PC_Circuit port map(PC_Address, ID_EX_PC_Out , Rdst_Val , ID_EX_Rdst_Val_OUT ,  dummy_MeM_Out , unCond_or_Pred , Should_Branch , Should_Not_Branch , PC_Selector_Mem , PC_Val); --hazard detection unit and forward unit
 
-	IC		: Instruction_Memory port map(PC_Val,'0',IC_Instruction);
+	IC		: Instruction_Memory port map(PC_Address,'0',IC_Instruction); -- PC_Val is replaced with PC_Address to test
 
 	Sign_Extend	: Sign_Extender port map(IC_Instruction,IC_Inst_Extended);
 
