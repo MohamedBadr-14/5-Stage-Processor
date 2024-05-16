@@ -89,8 +89,8 @@ begin
 	CCR_Write <= "0000" WHEN opcode = "00000" -- NOP
 	ELSE         "0011" WHEN opcode = "00001" -- NOT
 	ELSE         "0011" WHEN opcode = "00010" -- NEG
-	ELSE         "0011" WHEN opcode = "00011" -- INC
-	ELSE         "0011" WHEN opcode = "00100" -- DEC
+	ELSE         "1111" WHEN opcode = "00011" -- INC
+	ELSE         "1111" WHEN opcode = "00100" -- DEC
 	ELSE         "0000" WHEN opcode = "00101" -- OUT
 	ELSE         "0000" WHEN opcode = "00110" -- IN
 	ELSE         "0000" WHEN opcode = "00111" -- MOV
