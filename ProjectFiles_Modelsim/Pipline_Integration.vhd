@@ -413,6 +413,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal Should_Branch			: std_logic := '0';
 	signal Should_Not_Branch		: std_logic := '0';
 	signal PC_Selector_Mem			: std_logic := '0';
+	signal PC_Selector				: std_logic := '0';
 	signal PC_Val					: std_logic_vector(31 downto 0);
 	signal Rdst_Val					: std_logic_vector(31 downto 0);
 	signal Branch_Prediction		: std_logic;
@@ -525,7 +526,7 @@ begin
 	Imm_Flag_Buffer	: my_DFF port map(IsInstOut_Ctrl_Out,clk,reset,IsInstIn_Buff_Out);
 	
 	ID_Controller 	: Controller port map(IF_ID_Inst_Out(15 downto 11),IsInstIn_Buff_Out,CCR_Write_Ctrl_Signal,EX_Ctrl_Signal,WB_Ctrl_Signal,M_Ctrl_Signal,
-						IsInstOut_Ctrl_Out , Cond_Branch , unCond_Branch , PC_Selector, P_P_Ctrl_Signal);
+						IsInstOut_Ctrl_Out , Cond_Branch , unCond_Branch_from_ID , PC_Selector, P_P_Ctrl_Signal);
 
 	Reg_File	: Register_File port map(IF_ID_Inst_Out(10 downto 8),IF_ID_Inst_Out(7 downto 5),MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,
 						MEM_WB_Res1_Out,MEM_WB_Res2_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
