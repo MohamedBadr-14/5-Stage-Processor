@@ -369,6 +369,20 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 		);
 	end component;
 
+	component SP_Circuit is
+
+		port(
+	
+				Reset         : in std_logic;
+				CLK           : in std_logic;
+				SP_Enable     : in std_logic;
+				Push_Pop      : in std_logic;
+				SP            : out std_logic_vector(31 downto 0)
+	
+		);
+	
+	end component;
+
 	
 	signal PC_Address 				: std_logic_vector(31 downto 0);
 	signal IC_Instruction			: std_logic_vector(15 downto 0);
