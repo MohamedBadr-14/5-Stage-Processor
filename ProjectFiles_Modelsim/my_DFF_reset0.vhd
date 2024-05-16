@@ -3,7 +3,6 @@ USE IEEE.std_logic_1164.all;
 
 ENTITY my_DFF_reset0 IS
 	PORT( 	d,clk,rst : IN std_logic;
-			Jump_Zero_Flag : in std_logic;
 			enable	  : IN std_logic;
 			q : OUT std_logic);
 END entity;
