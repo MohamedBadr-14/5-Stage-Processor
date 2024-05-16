@@ -38,6 +38,8 @@ begin
             
         end if;
 
+        SP <= Temp_SP;
+
     end process;
 
 end architecture;

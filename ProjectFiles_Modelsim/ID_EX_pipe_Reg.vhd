@@ -9,10 +9,6 @@ entity ID_EX_Pipe_Reg is
 		IN_WB_MemToReg			: in std_logic;
 		IN_WB_RegWrite1			: in std_logic;
 		IN_WB_RegWrite2			: in std_logic;
-		-- There is missing control signals but these are only used for phase 1.
-		-- ID_EX_M same as above
-		-- same goes for the PC, IN
-		-- same goes for Dst[10 - 8]
 		IN_EX_ALUOp				: in std_logic;
 		IN_EX_RegDst			: in std_logic;
 		IN_EX_CCR_Write			: in std_logic_vector(3 downto 0);
@@ -29,6 +25,9 @@ entity ID_EX_Pipe_Reg is
 		IN_PS_W_EN 				: in std_logic;
 		IN_PC_Address			: in std_logic_vector(31 downto 0);
 		IN_Rdst_Val				: in std_logic_vector(31 downto 0);
+		IN_Push_Pop				: in std_logic;
+		IN_SP_Enable			: in std_logic;
+		
 		OUT_WB_MemToReg			: out std_logic;
 		OUT_WB_RegWrite1		: out std_logic;
 		OUT_WB_RegWrite2		: out std_logic;	
@@ -47,7 +46,9 @@ entity ID_EX_Pipe_Reg is
 		OUT_Protect_Free 		: out std_logic;
 		OUT_PS_W_EN 			: out std_logic;
 		OUT_PC_Address			: out std_logic_vector(31 downto 0);
-		OUT_Rdst_Val				: out std_logic_vector(31 downto 0)	
+		OUT_Rdst_Val			: out std_logic_vector(31 downto 0);
+		OUT_Push_Pop			: out std_logic;
+		OUT_SP_Enable			: out std_logic	
 	);
 
 end entity;
@@ -80,6 +81,8 @@ begin
 			OUT_PS_W_EN <= '0';
 			OUT_PC_Address <= (others => '0');
 			OUT_Rdst_Val <= (others => '0');
+			OUT_Push_Pop <= '0';
+			OUT_SP_Enable <= '0';
 		elsif rising_edge(clk) then
 			OUT_WB_MemToReg <= IN_WB_MemToReg;		
 			OUT_WB_RegWrite1 <=IN_WB_RegWrite1;	
@@ -100,6 +103,8 @@ begin
 			OUT_PS_W_EN <= IN_PS_W_EN;
 			OUT_Rdst_Val <= IN_Rdst_Val;
 			OUT_PC_Address <= IN_PC_Address;
+			OUT_Push_Pop <= IN_Push_Pop;
+			OUT_SP_Enable <= IN_Push_Pop;
 		end if;
 
 	end process;

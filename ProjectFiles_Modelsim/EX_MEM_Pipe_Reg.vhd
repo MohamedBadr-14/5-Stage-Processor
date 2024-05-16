@@ -18,6 +18,8 @@ entity EX_MEM_Pipe_Reg is
 		IN_MemRead				: in std_logic;
 		IN_Protect_Free 		: in std_logic;
 		IN_PS_W_EN 				: in std_logic;
+		IN_Push_Pop				: in std_logic;
+		IN_SP_Enable			: in std_logic;
 
 		OUT_WB_MemToReg			: out std_logic;
 		OUT_WB_RegWrite1		: out std_logic;
@@ -30,7 +32,9 @@ entity EX_MEM_Pipe_Reg is
 		OUT_MemWrite		 	: out std_logic;
 		OUT_MemRead				: out std_logic;
 		OUT_Protect_Free 		: out std_logic;
-		OUT_PS_W_EN 			: out std_logic
+		OUT_PS_W_EN 			: out std_logic;
+		OUT_Push_Pop			: out std_logic;
+		OUT_SP_Enable			: out std_logic
 	);
 
 end entity;
@@ -56,6 +60,8 @@ begin
 			OUT_MemRead <= '0';
 			OUT_Protect_Free <= '0';
 			OUT_PS_W_EN <= '0';
+			OUT_Push_Pop <= '0';
+			OUT_SP_Enable <= '0';
 		elsif rising_edge(clk) then
 			OUT_WB_MemToReg <= IN_WB_MemToReg;
 			OUT_WB_RegWrite1 <= IN_WB_RegWrite1;
@@ -69,6 +75,8 @@ begin
 			OUT_MemRead <= IN_MemRead;
 			OUT_Protect_Free <= IN_Protect_Free;
 			OUT_PS_W_EN <= IN_PS_W_EN;
+			OUT_Push_Pop <= IN_Push_Pop;
+			OUT_SP_Enable <= IN_Push_Pop;
 		end if;
 
 	end process;
