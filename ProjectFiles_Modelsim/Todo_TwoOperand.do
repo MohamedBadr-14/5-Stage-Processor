@@ -37,6 +37,7 @@ mem load -filltype value -filldata 0100110110111000 -fillradix binary /pipeline_
 
 force -freeze sim:/pipeline_integration/clk 0 0, 1 {500 ps} -r {1 ns}
 force -freeze sim:/pipeline_integration/reset 1 0
+force -freeze sim:/pipeline_integration/INPORT 00000000 0
 run
 
 force -freeze sim:/pipeline_integration/reset 0 0
