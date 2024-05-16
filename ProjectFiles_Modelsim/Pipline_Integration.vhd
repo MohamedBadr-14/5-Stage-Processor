@@ -9,7 +9,7 @@ entity Pipeline_Integration is
 		reset	 	 : in std_logic;
 		INPORT	 	 : in std_logic_vector(31 downto 0);
 		OUTPORT		 : out std_logic_vector(31 downto 0);
-		Exeption_out : out std_logic
+		Exception_out: out std_logic
 	);
 
 end entity;

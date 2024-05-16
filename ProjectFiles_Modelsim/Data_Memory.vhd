@@ -38,7 +38,7 @@ begin
                 else
                     Mem_outRange <= '0';
                     data_array(to_integer(unsigned(Address))) <= Data(31 downto 16);
-                    data_array((to_integer(unsigned(Address)) + 1) <= Data(15 downto 0);
+                    data_array(to_integer(unsigned(Address)) + 1) <= Data(15 downto 0);
                 end if;
             end if;
         end if;
@@ -53,7 +53,7 @@ begin
             else
                 Mem_outRange <= '0';
                 Mem_Out(31 downto 16) <= data_array(to_integer(unsigned(Address)));
-                Mem_Out(15 downto 0) <= data_array((to_integer(unsigned(Address)) + 1);
+                Mem_Out(15 downto 0) <= data_array(to_integer(unsigned(Address)) + 1);
             end if;
         end if;
     end process;

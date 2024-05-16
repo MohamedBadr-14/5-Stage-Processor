@@ -29,7 +29,7 @@ begin
 			
 	end process;
 
-	if (to_integer(unsigned(ReadAddress)) >= 0 and to_integer(unsigned(ReadAddress)) <= 2047) then
+	if to_integer(unsigned(ReadAddress)) >= 0 and to_integer(unsigned(ReadAddress)) <= 2047 then
 		outRange <= '0';
 		Read_Port <= inst_array(to_integer(unsigned(ReadAddress)));
 	else
