@@ -414,7 +414,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			Data            : in std_logic_vector(31 downto 0);
 			Mem_Read        : in std_logic;
 			Mem_Out         : out std_logic_vector(31 downto 0);
-			Mem_Out_Range   : out std_logic
+			Mem_outRange	: out std_logic
 		);
 	end component;
 
@@ -629,7 +629,7 @@ begin
 										Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>EX_MEM_MemRead_Out,Mem_Out=>Memory_Out,Mem_Out_Range=>Memory_Out_Range);
 
 	MEM_WB		: MEM_WB_Pipe_Reg port map(clk,reset,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
-						dummy_MeM_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,EX_MEM_Pout_Out,EX_MEM_Inst_OutRange,EX_MEM_OVFL,Prot_Reg_isProtected,Memory_Out_Range,
+						dummy_MeM_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,EX_MEM_Pout_Out,EX_MEM_Inst_OutRange,EX_MEM_OVFL,Prot_Reg_isProtected,Mem_outRange,
 						MEM_WB_MemToReg_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,MEM_WB_MeM_Out_Out,
 						MEM_WB_Res1_Out,MEM_WB_Res2_Out,MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,MEM_WB_Pout_Out,MEM_WB_Inst_OutRange,MEM_WB_OVFL,MEM_WB_isProtected,MEM_WB_Data_outRange);
 

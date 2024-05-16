@@ -3,6 +3,7 @@ add wave -position end  sim:/pipeline_integration/clk
 add wave -position end  sim:/pipeline_integration/reset
 add wave -position end  sim:/pipeline_integration/INPORT
 add wave -position end  sim:/pipeline_integration/OUTPORT
+add wave -position end  sim:/pipeline_integration/Exception_out
 add wave -position end  sim:/pipeline_integration/PC_Address
 add wave -position end  sim:/pipeline_integration/IC_Instruction
 add wave -position end  /pipeline_integration/Reg_File/Registers
