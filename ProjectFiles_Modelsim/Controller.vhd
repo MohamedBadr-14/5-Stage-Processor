@@ -54,9 +54,9 @@ begin
 	ELSE  "1100" WHEN opcode = "00111" -- MOV
 	ELSE  "1000" WHEN opcode = "01000" -- SWAP
 	ELSE  "1100" WHEN opcode = "01001" -- ADD
-	ELSE  "1100" WHEN opcode = "01010" -- ADDI
+	ELSE  "1101" WHEN opcode = "01010" -- ADDI
 	ELSE  "1100" WHEN opcode = "01011" -- SUB
-	ELSE  "1100" WHEN opcode = "01100" -- SUBI
+	ELSE  "1101" WHEN opcode = "01100" -- SUBI
 	ELSE  "1100" WHEN opcode = "01101" -- AND
 	ELSE  "1100" WHEN opcode = "01110" -- OR
 	ELSE  "1100" WHEN opcode = "01111" -- XOR
