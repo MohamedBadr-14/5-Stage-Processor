@@ -25,7 +25,7 @@ begin
 		  ELSE "00111" WHEN OPcode = "00101"  -- F1=A		-- OUT
 		  ELSE "00111" WHEN OPcode = "00110"  -- F1=A 		-- IN
 		  ELSE "00111" WHEN OPcode = "00111"  -- F1=A		-- MOV
-		  ELSE "00111" WHEN OPcode = "01000"  -- F1=B F2=A	-- SWAP
+		  ELSE "00111" WHEN OPcode = "01000"  -- F1=A F2=B	-- SWAP
 		  ELSE "00100" WHEN OPcode = "01001"  -- F1=A+B		-- ADD
 		  ELSE "00100" WHEN OPcode = "01010"  -- F1=A+B		-- ADDI
 		  ELSE "00010" WHEN OPcode = "01011"  -- F1=A-B		-- SUB
@@ -35,12 +35,12 @@ begin
 		  ELSE "01100" WHEN OPcode = "01111"  -- F1=A xor B	-- XOR
 		  ELSE "00010" WHEN OPcode = "10000"  -- F1=A-B		-- CMP
 		  ELSE "00101" WHEN OPcode = "10001"  -- F1=B		-- LDM
-		  ELSE "00111" WHEN OPcode = "10001"  -- F1=A		-- PUSH
-		  ELSE "00000" WHEN OPcode = "10001"  -- F1=0		-- POP
-		  ELSE "00100" WHEN OPcode = "10001"  -- F2=A+B		-- LDD
-		  ELSE "00100" WHEN OPcode = "10001"  -- F2=A+B		-- STD
-		  ELSE "00111" WHEN OPcode = "10001"  -- F1=A		-- PROTECT
-		  ELSE "00111" WHEN OPcode = "10001"  -- F1=A		-- FREE
+		  ELSE "00111" WHEN OPcode = "10010"  -- F1=A		-- PUSH
+		  ELSE "00000" WHEN OPcode = "10011"  -- F1=0		-- POP
+		  ELSE "00100" WHEN OPcode = "10100"  -- F2=A+B		-- LDD
+		  ELSE "00100" WHEN OPcode = "10101"  -- F2=A+B		-- STD
+		  ELSE "00111" WHEN OPcode = "10110"  -- F1=A		-- PROTECT
+		  ELSE "00111" WHEN OPcode = "10111"  -- F1=A		-- FREE
 		  ELSE "00000";
 
 end Arch1;
