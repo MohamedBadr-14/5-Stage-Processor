@@ -15,7 +15,7 @@ entity Hazard_Detection_Unit is
         Should_Branch : out std_logic;
         Should_Not_Branch : out std_logic;
         unCond_or_Prediction : out std_logic;
-        OUT_PC_Selector_From_Mem : out std_logic;
+        OUT_PC_Selector_From_Mem : out std_logic
     );
 
 end entity;
