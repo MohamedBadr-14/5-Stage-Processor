@@ -29,11 +29,11 @@ begin
 			
 	end process;
 
-	if to_integer(unsigned(ReadAddress)) >= 0 and to_integer(unsigned(ReadAddress)) <= 2047 then
+	if to_integer(unsigned(ReadAddress)) < 0 or to_integer(unsigned(ReadAddress)) > 2047 then
+		outRange <= '1';
+	else
 		outRange <= '0';
 		Read_Port <= inst_array(to_integer(unsigned(ReadAddress)));
-	else
-		outRange <= '1';
 	end if;
 
 end IC_Arch;

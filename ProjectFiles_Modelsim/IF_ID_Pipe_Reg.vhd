@@ -30,12 +30,12 @@ begin
 			OUT_PC <= (others => '0');
 			OUT_Inst <= (others => '0');
 			OUT_INPORT <= (others => '0');
-			OUT_instr_outRange <= '0';
+			OUT_inst_outRange <= '0';
 		elsif rising_edge(clk) then
 			OUT_PC <= IN_PC;
 			OUT_Inst <= IN_Inst;
 			OUT_INPORT <= IN_INPORT;
-			OUT_instr_outRange <= IN_instr_outRange;
+			OUT_inst_outRange <= IN_instr_outRange;
 		end if;
 
 	end process;
