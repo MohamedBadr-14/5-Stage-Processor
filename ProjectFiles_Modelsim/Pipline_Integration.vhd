@@ -637,7 +637,7 @@ begin
 
 	OUT_MUX		: MUX_2X1_Generic port map(x"00000000",MEM_WB_Res1_Out,MEM_WB_Pout_Out,OUTPORT);
 
-	Exception_out <= MEM_WB_OVFL or MEM_WB_Inst_OutRange or MEM_WB_isProtected or MEM_WB_Data_outRange;
+	Exception_out <= CCR(3) or IC_Inst_OutRange or Prot_Reg_isProtected or Memory_Out_Range;
 
 	-- Hazard_Det_Unit   : Hazard_Detection_Unit port map 
 end Pipeline_Integration_arch;
