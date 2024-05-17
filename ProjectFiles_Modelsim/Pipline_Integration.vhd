@@ -680,7 +680,7 @@ MEM_WB				: MEM_WB_Pipe_Reg port map				(clk,reset,EX_MEM_MemToReg_Out,EX_MEM_Re
 
 MeMToReg_MUX		: MUX_2X1_Generic port map				(MEM_WB_Res1_Out,MEM_WB_MeM_Out_Out,MEM_WB_MemToReg_Out,WB_Data_1);
 
-	OUT_MUX			: MUX_2X1_Generic port map				(x"00000000",MEM_WB_Res1_Out,MEM_WB_Pout_Out,OUTPORT);
+OUT_MUX				: MUX_2X1_Generic port map				(x"00000000",MEM_WB_Res1_Out,MEM_WB_Pout_Out,OUTPORT);
 
 	Exception_out <= CCR(3) or Prot_Reg_isProtected;
 
