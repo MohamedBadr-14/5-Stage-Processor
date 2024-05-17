@@ -49,11 +49,12 @@ end Component;
 Signal Sel_AUX			: std_logic_vector(4 downto 0);
 SIGNAL F_AUX			: std_logic_vector(n-1 downto 0);
 SIGNAL Cout_AUX			: std_logic;
+SIGNAL tempOVF			: std_logic;
 
 begin
 
 parta:ALUparta
-GENERIC MAP (n) PORT MAP (A=>A,B=>B,S=>S,Cin=>Cin,F=>Fa,Cout=>Couta,ovf=>Flags(3));
+GENERIC MAP (n) PORT MAP (A=>A,B=>B,S=>S,Cin=>Cin,F=>Fa,Cout=>Couta,ovf=>tempOVF);
 
 partb:ALUpartb
 GENERIC MAP (n) PORT MAP (A=>A,B=>B,S=>S,Cin=>Cin,F=>Fb,Cout=>Coutb);
@@ -71,13 +72,11 @@ Sel_AUX <= (S & Cin);
 
  --Overflow Flag
 Flags(3) <= 
-			'1' WHEN (F_AUX(31) = '0' and A(31) = '1' and B(31) = '1') or (F_AUX(31) = '1' and A(31) = '0' and B(31) = '0') and ((Sel_AUX = "00001") or (Sel_AUX = "00100")),
-			'1' WHEN (F_AUX(31) = '1' and A(31) = '0' and B(31) = '1') or (F_AUX(31) = '0' and A(31) = '11' and B(31) = '0') and ((Sel_AUX = "00010") or (Sel_AUX = "00110")),
-
+			'1' WHEN (((F_AUX(31) = '0' and A(31) = '1' and B(31) = '1') or (F_AUX(31) = '1' and A(31) = '0' and B(31) = '0')) and ((Sel_AUX = "00001") or (Sel_AUX = "00100"))) or (((F_AUX(31) = '1' and A(31) = '0' and B(31) = '1') or (F_AUX(31) = '0' and A(31) = '1' and B(31) = '0')) and ((Sel_AUX = "00010") or (Sel_AUX = "00110")))
 			else '0';
 		
  --Carry Flag
-	Flags(2) <= not(Cout_AUX)	WHEN	(Sel_AUX = "00010" or Sel_AUX = "00110") ,
+	Flags(2) <= not(Cout_AUX)	WHEN	(Sel_AUX = "00010" or Sel_AUX = "00110")
 				else Cout_AUX;
 		
 --Negative Flag
