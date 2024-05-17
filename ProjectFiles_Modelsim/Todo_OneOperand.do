@@ -10,7 +10,7 @@ add wave -position end  /pipeline_integration/Reg_File/Registers
 add wave -position end  sim:/pipeline_integration/Operand1
 add wave -position end  sim:/pipeline_integration/Operand2
 add wave -position end  sim:/pipeline_integration/ALU_Res1
-add wave -position end  sim:/pipeline_integration/ALU_Res1
+add wave -position end  sim:/pipeline_integration/ALU_Res2
 add wave -position end  sim:/pipeline_integration/MEM_WB_Res1_Out
 add wave -position end  sim:/pipeline_integration/MEM_WB_RegDst_Out
 add wave -position end  sim:/pipeline_integration/MEM_WB_RegWrite1_Out
