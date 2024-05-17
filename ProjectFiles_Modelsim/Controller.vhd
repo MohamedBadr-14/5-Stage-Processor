@@ -16,8 +16,8 @@ entity Controller is
 		unCond_Branch	: OUT std_logic;
 		PC_Selector 	: OUT std_logic;
 		Push_Pop_Ctrl	: OUT std_logic_vector(1 downto 0); -- bit1 : Push/Pop / bit0 : SP_Enable
-		Pout			: OUT std_logic
-		M_DataMeM		: OUT std_logic_vector(3 downto 0); -- bit3 and bit2 : MeM_In_Adrs / bit1 and bit0 : MeM_Data
+		Pout			: OUT std_logic;
+		M_DataMeM		: OUT std_logic_vector(3 downto 0) -- bit3 and bit2 : MeM_In_Adrs / bit1 and bit0 : MeM_Data
     	);
 
 end entity;

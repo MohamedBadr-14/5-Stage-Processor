@@ -114,8 +114,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			unCond_Branch	: OUT std_logic;
 			PC_Selector 	: OUT std_logic;
 			Push_Pop_Ctrl	: OUT std_logic_vector(1 downto 0); -- bit1 : Push/Pop / bit0 : SP_Enable
-			Pout			: OUT std_logic
-			M_DataMeM		: OUT std_logic_vector(3 downto 0); -- bit3 and bit2 : MeM_In_Adrs / bit1 and bit0 : MeM_Data
+			Pout			: OUT std_logic;
+			M_DataMeM		: OUT std_logic_vector(3 downto 0) -- bit3 and bit2 : MeM_In_Adrs / bit1 and bit0 : MeM_Data
 			);
 	
 	end component;
@@ -208,6 +208,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			IN_PC_Selector			: in std_logic;
 			IN_Prediction			: in std_logic;
 			IN_Cond_Branch_flag 	: in std_logic;
+			IN_MeM_In_Adrs			: in std_logic_vector(1 downto 0);
+			IN_MeM_Data				: in std_logic_vector(1 downto 0);
 	
 			OUT_WB_MemToReg			: out std_logic;
 			OUT_WB_RegWrite1		: out std_logic;
@@ -234,7 +236,9 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			OUT_Inst_outRange		: out std_logic;
 			OUT_PC_Selector			: out std_logic;
 			OUT_Prediction			: out std_logic;
-			OUT_Cond_Branch_flag 	: out std_logic
+			OUT_Cond_Branch_flag 	: out std_logic;
+			OUT_MeM_In_Adrs			: out std_logic_vector(1 downto 0);
+			OUT_MeM_Data			: out std_logic_vector(1 downto 0)
 		);
 	
 	end component;
@@ -298,6 +302,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			IN_Inst_outRange		: in std_logic;
 			IN_OVFL					: in std_logic;
 			IN_PC_Selector			: in std_logic;
+			IN_MeM_In_Adrs			: in std_logic_vector(1 downto 0);
+			IN_MeM_Data				: in std_logic_vector(1 downto 0);
 	
 			OUT_WB_MemToReg			: out std_logic;
 			OUT_WB_RegWrite1		: out std_logic;
@@ -316,7 +322,9 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			OUT_Pout				: out std_logic;
 			OUT_Inst_outRange		: out std_logic;
 			OUT_OVFL				: out std_logic;
-			OUT_PC_Selector			: out std_logic
+			OUT_PC_Selector			: out std_logic;
+			OUT_MeM_In_Adrs			: out std_logic_vector(1 downto 0);
+			OUT_MeM_Data			: out std_logic_vector(1 downto 0)
 		);
 	
 	end component;
@@ -497,7 +505,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal M_Ctrl_Signal			: std_logic_vector(3 downto 0);
 	signal P_P_Ctrl_Signal			: std_logic_vector(1 downto 0);
 	signal Pout_Ctrl_Signal			: std_logic;
-	signal M_DataMeM_Ctrl_Signal	: std_logic_vector(3 dowwto 0);
+	signal M_DataMeM_Ctrl_Signal	: std_logic_vector(3 downto 0);
 	signal Rdata1,Rdata2			: std_logic_vector(31 downto 0);
 	signal OP1,OP2					: std_logic_vector(31 downto 0);
 
@@ -651,7 +659,7 @@ ID_EX				: ID_EX_Pipe_Reg port map				(clk,reset,ID_EX_Flush,WB_Ctrl_Signal(0),W
 															ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_Opcode_Out,ID_EX_DST_10_8_Out,ID_EX_Rdata2_Prop_Out,ID_EX_MemWrite_Out,
 															ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out,ID_EX_PC_Out,ID_EX_Rdst_Val_OUT,
 															ID_EX_Push_Pop_Out,ID_EX_SP_Enable_Out,ID_EX_Pout_Out,ID_EX_Inst_OutRange,
-															ID_EX_PC_Selector_OUT , ID_EX_Prediction_OUT , ID_EX_Cond_Branch_OUT
+															ID_EX_PC_Selector_OUT , ID_EX_Prediction_OUT , ID_EX_Cond_Branch_OUT,
 															ID_EX_MeM_In_Adrs_Out,ID_EX_MeM_Data_Out);
 
 ALU_CTRL			: ALU_Controller port map				(ID_EX_Opcode_Out,ID_EX_ALUOp_Out,ALU_Sel_Bits);

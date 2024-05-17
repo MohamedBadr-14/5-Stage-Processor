@@ -52,7 +52,7 @@ begin
 
 	end process;
 
-    process(Mem_Read)
+    process(ALL)
     begin
         if Mem_Read = '1' then
             if to_integer(unsigned(Address)) < 2048 or to_integer(unsigned(Address)) > 4095 then

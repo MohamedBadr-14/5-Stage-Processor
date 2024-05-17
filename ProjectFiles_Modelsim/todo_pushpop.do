@@ -8,7 +8,10 @@ add wave -position end  sim:/pipeline_integration/Operand1
 add wave -position end  sim:/pipeline_integration/Operand2
 add wave -position end  sim:/pipeline_integration/ALU_Res1
 add wave -position end  sim:/pipeline_integration/ALU_Res2
-add wave -position end  sim:/pipeline_integration/
+add wave -position end  /pipeline_integration/Data_Mem/data_array
+add wave -position end  sim:/pipeline_integration/Stack_Pointer
+add wave -position end  sim:/pipeline_integration/Memory_Data
+add wave -position end  sim:/pipeline_integration/Memory_Address
 add wave -position end  sim:/pipeline_integration/CCR
 
 mem load -filltype value -filldata 1000100000100000 -fillradix binary /pipeline_integration/IC/inst_array(0)
