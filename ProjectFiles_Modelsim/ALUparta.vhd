@@ -30,7 +30,7 @@ Architecture ALUparta_arch of ALUparta is
 	PORT (a,b : IN  std_logic_vector(n-1 downto 0);
           cin : in std_logic;
 			s : out std_logic_vector(n-1 downto 0);
-         cout : OUT std_logic 
+         cout : OUT std_logic;
 		  ovf : OUT std_logic);
 	END Component;
 	

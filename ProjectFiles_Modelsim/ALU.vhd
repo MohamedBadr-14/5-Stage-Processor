@@ -53,7 +53,7 @@ SIGNAL Cout_AUX			: std_logic;
 begin
 
 parta:ALUparta
-GENERIC MAP (n) PORT MAP (A=>A,B=>B,S=>S,Cin=>Cin,F=>Fa,Cout=>Couta,ovf=>Flags(3);
+GENERIC MAP (n) PORT MAP (A=>A,B=>B,S=>S,Cin=>Cin,F=>Fa,Cout=>Couta,ovf=>Flags(3));
 
 partb:ALUpartb
 GENERIC MAP (n) PORT MAP (A=>A,B=>B,S=>S,Cin=>Cin,F=>Fb,Cout=>Coutb);
