@@ -70,14 +70,15 @@ Sel_AUX <= (S & Cin);
 		 '0'       when   others;
 
  --Overflow Flag
--- Flags(3) <= 
--- 			'1' WHEN (F_AUX(31) = '0' and A(31) = '1' and B(31) = '1') or (F_AUX(31) = '1' and A(31) = '0' and B(31) = '0') and ((Sel_AUX = "00001") or (Sel_AUX = "00100")),
--- 			'1' WHEN (F_AUX(31) = '1' and A(31) = '0' and B(31) = '1') or (F_AUX(31) = '0' and A(31) = '11' and B(31) = '0') and ((Sel_AUX = "00010") or (Sel_AUX = "00110")),
+Flags(3) <= 
+			'1' WHEN (F_AUX(31) = '0' and A(31) = '1' and B(31) = '1') or (F_AUX(31) = '1' and A(31) = '0' and B(31) = '0') and ((Sel_AUX = "00001") or (Sel_AUX = "00100")),
+			'1' WHEN (F_AUX(31) = '1' and A(31) = '0' and B(31) = '1') or (F_AUX(31) = '0' and A(31) = '11' and B(31) = '0') and ((Sel_AUX = "00010") or (Sel_AUX = "00110")),
 
--- 			else '0';
+			else '0';
 		
  --Carry Flag
-Flags(2) <= Cout_AUX;
+	Flags(2) <= not(Cout_AUX)	WHEN	(Sel_AUX = "00010" or Sel_AUX = "00110") ,
+				else Cout_AUX;
 		
 --Negative Flag
 with F_AUX(31) select
