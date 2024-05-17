@@ -96,7 +96,7 @@ begin
 			OUT_Protect_Free <= IN_Protect_Free;
 			OUT_PS_W_EN <= IN_PS_W_EN;
 			OUT_Push_Pop <= IN_Push_Pop;
-			OUT_SP_Enable <= IN_Push_Pop;
+			OUT_SP_Enable <= IN_SP_Enable;
 			OUT_Pout <= IN_Pout;
 			OUT_Inst_outRange <= IN_Inst_outRange;
 			OUT_OVFL <= IN_OVFL;

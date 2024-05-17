@@ -127,7 +127,7 @@ begin
 			OUT_Rdst_Val <= IN_Rdst_Val;
 			OUT_PC_Address <= IN_PC_Address;
 			OUT_Push_Pop <= IN_Push_Pop;
-			OUT_SP_Enable <= IN_Push_Pop;
+			OUT_SP_Enable <= IN_SP_Enable;
 			OUT_Pout <= IN_Pout;
 			OUT_Inst_outRange <= IN_Inst_outRange;
 			OUT_PC_Selector <= IN_PC_Selector;

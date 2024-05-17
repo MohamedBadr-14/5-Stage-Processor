@@ -27,7 +27,7 @@ begin
 
         if Reset = '1' then
             Temp_SP <= x"00000FFF";
-        elsif rising_edge(CLK) then            --Make sure whether it's to be updated on falling or rising
+        elsif falling_edge(CLK) then            --Make sure whether it's to be updated on falling or rising
             if SP_Enable = '1' then
                 if Push_Pop = '1' then  --Pop
                     Temp_SP <= std_logic_vector(to_unsigned((to_integer(unsigned(Temp_SP)) + 2),32));

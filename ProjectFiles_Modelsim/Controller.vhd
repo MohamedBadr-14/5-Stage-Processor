@@ -44,6 +44,7 @@ begin
 	Pout <= '1' WHEN opcode = "00101"
 	ELSE '0';
 
+	-- bit3 : ALUOp / bit2 : RegDst / bit1 : ALUSrc1 / bit0 : ALUSrc2
 	EX <= "0000" WHEN IsInstIn = '0'
 	ELSE  "0000" WHEN opcode = "00000" -- NOP
 	ELSE  "1100" WHEN opcode = "00001" -- NOT
@@ -63,8 +64,11 @@ begin
 	ELSE  "1100" WHEN opcode = "01111" -- XOR
 	ELSE  "1000" WHEN opcode = "10000" -- CMP
 	ELSE  "1001" WHEN opcode = "10001" -- LDM
+	ELSE  "1000" WHEN opcode = "10010" -- PUSH
+	ELSE  "0000" WHEN opcode = "10011" -- POP
 	ELSE  "0000";
 
+	-- bit2 : RegWrite1 / bit1 : RegWrite2 / bit0 : MemToReg
 	WB <= "000" WHEN IsInstIN = '0'
 	ELSE  "000" WHEN opcode = "00000" -- NOP
 	ELSE  "100" WHEN opcode = "00001" -- NOT
@@ -84,6 +88,8 @@ begin
 	ELSE  "100" WHEN opcode = "01111" -- XOR
 	ELSE  "000" WHEN opcode = "10000" -- CMP
 	ELSE  "100" WHEN opcode = "10001" -- LDM
+	ELSE  "000" WHEN opcode = "10010" -- PUSH
+	ELSE  "101" WHEN opcode = "10011" -- POP
 	ELSE  "000";
 
 	--OVF CF NF ZF

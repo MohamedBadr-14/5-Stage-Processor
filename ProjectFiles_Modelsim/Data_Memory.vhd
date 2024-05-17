@@ -31,6 +31,7 @@ begin
 		if Rst = '1' then
 			data_array <= (others => (others => '0'));
             Mem_Out <= (others => '0');
+            Mem_outRange <= '0';
 		end if;
 
         if falling_edge(Clk) then
@@ -62,9 +63,11 @@ begin
                 if SP_Enable = '0' then
                     Mem_Out(15 downto 0) <= data_array(to_integer(unsigned(Address)));
                     Mem_Out(31 downto 16) <= data_array(to_integer(unsigned(Address)) + 1);
-                elsif SP_Enable = '1' and Push_Pop = '1' then -- Pop
-                    Mem_Out(31 downto 16) <= data_array(to_integer(unsigned(Address)));
-                    Mem_Out(15 downto 0) <= data_array(to_integer(unsigned(Address)) + 1);
+                else
+                    if Push_Pop = '1' then -- Pop
+                        Mem_Out(31 downto 16) <= data_array(to_integer(unsigned(Address)));
+                        Mem_Out(15 downto 0) <= data_array(to_integer(unsigned(Address)) + 1);
+                    end if;
                 end if;
             end if;
         end if;
