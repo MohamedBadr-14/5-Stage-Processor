@@ -30,16 +30,16 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	component PC_Circuit is
 
 		Port (
-        PC_New_Value  : in  std_logic_vector(31 downto 0);
-        PC_From_EX  : in  std_logic_vector(31 downto 0);
-        Rdst       : in  std_logic_vector(31 downto 0);
-		Rdst_From_EX       : in  std_logic_vector(31 downto 0);
-        Mem_Out       : in  std_logic_vector(31 downto 0);
-        unCond_or_Pred : in std_logic := '0';
-        Should_Branch : in std_logic :='0';
-        Should_Not_Branch : in std_logic := '0';
-        PC_Selector_Mem : in std_logic :='0';
-        Outp     : out std_logic_vector(31 downto 0)
+        PC_New_Value		: in  std_logic_vector(31 downto 0);
+        PC_From_EX			: in  std_logic_vector(31 downto 0);
+        Rdst       			: in  std_logic_vector(31 downto 0);
+		Rdst_From_EX     	: in  std_logic_vector(31 downto 0);
+        Mem_Out       		: in  std_logic_vector(31 downto 0);
+        unCond_or_Pred 		: in std_logic := '0';
+        Should_Branch 		: in std_logic :='0';
+        Should_Not_Branch 	: in std_logic := '0';
+        PC_Selector_Mem 	: in std_logic :='0';
+        Outp     			: out std_logic_vector(31 downto 0)
     	);
 
 	end component;
@@ -100,18 +100,18 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	Component Controller is
 
 		port(
-			opcode 		: IN std_logic_vector(4 DOWNTO 0);
-			IsInstIn	: IN std_logic;
-			CCR_Write	: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : OVF / bit2: CF / bit1 : NF / bit0 : ZF
-			EX 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : ALUOp / bit2 : RegDst / bit1 : ALUSrc1 / bit0 : ALUSrc2
-			WB 			: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2/ bit0 : MemToReg
-			M 			: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : MemWrite / bit2 : MemRead / bit1 : Protect_Free / bit0 : PS_W_EN
-			IsInstOut	: OUT std_logic;
-			Cond_Branch : OUT std_logic;
-			unCond_Branch : OUT std_logic;
-			PC_Selector : OUT std_logic;
-			Push_Pop_Ctrl : OUT std_logic_vector(1 downto 0);-- bit1 : Push/Pop / bit0 : SP_Enable
-			Pout		: OUT std_logic
+			opcode 			: IN std_logic_vector(4 DOWNTO 0);
+			IsInstIn		: IN std_logic;
+			CCR_Write		: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : OVF / bit2: CF / bit1 : NF / bit0 : ZF
+			EX 				: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : ALUOp / bit2 : RegDst / bit1 : ALUSrc1 / bit0 : ALUSrc2
+			WB 				: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2/ bit0 : MemToReg
+			M 				: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : MemWrite / bit2 : MemRead / bit1 : Protect_Free / bit0 : PS_W_EN
+			IsInstOut		: OUT std_logic;
+			Cond_Branch 	: OUT std_logic;
+			unCond_Branch	: OUT std_logic;
+			PC_Selector 	: OUT std_logic;
+			Push_Pop_Ctrl 	: OUT std_logic_vector(1 downto 0);-- bit1 : Push/Pop / bit0 : SP_Enable
+			Pout			: OUT std_logic
 			);
 	
 	end component;
@@ -119,17 +119,17 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	component Hazard_Detection_Unit is
 
 		port(
-        Cond_Branch : in std_logic;
-        unCond_Branch : in std_logic;
-        PC_Selector_From_Mem : in std_logic;
-        Prediction : in std_logic;
-        Cond_Branch_From_EX : in std_logic;
-        Prev_Prediction : in std_logic;
-        Zero_Flag : in std_logic;
-        Should_Branch : out std_logic;
-        Should_Not_Branch : out std_logic;
-        unCond_or_Prediction : out std_logic;
-        OUT_PC_Selector_From_Mem : out std_logic
+        Cond_Branch 				: in std_logic;
+        unCond_Branch 				: in std_logic;
+        PC_Selector_From_Mem 		: in std_logic;
+        Prediction 					: in std_logic;
+        Cond_Branch_From_EX 		: in std_logic;
+        Prev_Prediction 			: in std_logic;
+        Zero_Flag 					: in std_logic;
+        Should_Branch 				: out std_logic;
+        Should_Not_Branch 			: out std_logic;
+        unCond_or_Prediction 		: out std_logic;
+        OUT_PC_Selector_From_Mem	: out std_logic
     );
 
 	end component;
@@ -150,10 +150,10 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	component Branching_Decode is
 
 		PORT( 
-    		Rdst, IN_Rdst_EX_MEM_1 , IN_Rdst_EX_MEM_2 , Rdst_EX_MEM_OUT_1, Rdst_EX_MEM_OUT_2 : in std_logic_vector(2 downto 0);
-    		RData , Res1 , Res2 , Res1_OUT_EX_MEM , Res2_OUT_EX_MEM : in std_logic_vector(31 downto 0);
-    		RegWrite_1 , RegWrite_2 , OUT_EX_MEM_RegWrite_1 , OUT_EX_MEM_RegWrite_2 : in std_logic;
-    		Rdst_Val : out std_logic_vector(31 downto 0) 
+    		Rdst, IN_Rdst_EX_MEM_1 , IN_Rdst_EX_MEM_2 , Rdst_EX_MEM_OUT_1, Rdst_EX_MEM_OUT_2	: in std_logic_vector(2 downto 0);
+    		RData , Res1 , Res2 , Res1_OUT_EX_MEM , Res2_OUT_EX_MEM 							: in std_logic_vector(31 downto 0);
+    		RegWrite_1 , RegWrite_2 , OUT_EX_MEM_RegWrite_1 , OUT_EX_MEM_RegWrite_2 			: in std_logic;
+    		Rdst_Val 																			: out std_logic_vector(31 downto 0) 
     	);
 
 	end component;
@@ -161,9 +161,9 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	component Predictor is
 
 		PORT(
-			clk,rst : IN std_logic;
-            Should_Branch , Shoud_Not_Branch : IN std_logic;
-			Decision : OUT std_logic
+			clk,rst 							: IN std_logic;
+            Should_Branch , Shoud_Not_Branch	: IN std_logic;
+			Decision 							: OUT std_logic
 		);
 
 	end component;
@@ -390,8 +390,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 
 		port( 
 			in0,in1,in2,in3,in4,in5,in6,in7 	: in std_logic_vector (n-1 DOWNTO 0);
-			sel 					: in std_logic_vector (2 downto 0);
-			out1 					: out std_logic_vector (n-1 DOWNTO 0)
+			sel 								: in std_logic_vector (2 downto 0);
+			out1 								: out std_logic_vector (n-1 DOWNTO 0)
 		);
 
 	end component;
