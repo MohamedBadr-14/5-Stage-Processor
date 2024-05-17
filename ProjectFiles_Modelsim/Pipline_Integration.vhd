@@ -256,27 +256,28 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	component Forwarding_Unit is
 
 		port(
-		
+			
 			IN_ID_EX_Src1		: in std_logic_vector(2 downto 0);
 			IN_ID_EX_Src2		: in std_logic_vector(2 downto 0);	
-
+	
 			IN_EX_MEM_RegWrite1	: in std_logic;
 			IN_EX_MEM_RegWrite2	: in std_logic;
 			IN_EX_MEM_RegDst	: in std_logic_vector(2 downto 0);
 			IN_EX_MEM_Src_10_8	: in std_logic_vector(2 downto 0);
-	
+			IN_EX_MEM_MemToReg	: in std_logic;
+		
 			IN_MEM_WB_RegWrite1	: in std_logic;
 			IN_MEM_WB_RegWrite2	: in std_logic;
 			IN_MEM_WB_RegDst	: in std_logic_vector(2 downto 0);
 			IN_MEM_WB_Src_10_8	: in std_logic_vector(2 downto 0);
 			IN_MEM_WB_MemToReg	: in std_logic;
-
-			ForwardSrc1			: out std_logic_vector(2 downto 0);
-			ForwardSrc2			: out std_logic_vector(2 downto 0)
-		
+	
+			ForwardSrc1		: out std_logic_vector(2 downto 0);
+			ForwardSrc2		: out std_logic_vector(2 downto 0)
 			
+				
 		);
-
+	
 	end component;
 
 	component EX_MEM_Pipe_Reg is
@@ -664,15 +665,16 @@ ID_EX				: ID_EX_Pipe_Reg port map				(clk,reset,ID_EX_Flush,WB_Ctrl_Signal(0),W
 
 ALU_CTRL			: ALU_Controller port map				(ID_EX_Opcode_Out,ID_EX_ALUOp_Out,ALU_Sel_Bits);
 
-FU					: Forwarding_Unit port map				(ID_EX_DST_10_8_Out,ID_EX_DST_7_5_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
-															EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
-															MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,MEM_WB_MemToReg_Out,FSrc1,FSrc2);
+FU					: Forwarding_Unit port map				(ID_EX_DST_10_8_Out,ID_EX_DST_7_5_Out,
+															EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,EX_MEM_MemToReg_Out,
+															MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,MEM_WB_MemToReg_Out,
+															FSrc1,FSrc2);
 	
 Operand1_MUX		: MUX_8X1_Generic port map				(ID_EX_OP1_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,MEM_WB_Res1_Out,MEM_WB_Res2_Out,
-															MEM_WB_MeM_Out_Out,dummy_32bits,dummy_32bits,FSrc1,Operand1);
+															MEM_WB_MeM_Out_Out,Memory_Out,dummy_32bits,FSrc1,Operand1);
 
 Operand2_MUX		: MUX_8X1_Generic port map				(ID_EX_OP2_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,MEM_WB_Res1_Out,MEM_WB_Res2_Out,
-															MEM_WB_MeM_Out_Out,dummy_32bits,dummy_32bits,FSrc2,Operand2);
+															MEM_WB_MeM_Out_Out,Memory_Out,dummy_32bits,FSrc2,Operand2);
 
 DST_MUX				: MUX_2X1_Generic generic map(3) port map(ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_RegDst_Out,RegDst_MUX_Out);
 
@@ -710,7 +712,7 @@ Stack_Pointer_plus_2 <= std_logic_vector(to_unsigned((to_integer(unsigned(Stack_
 Memory_Address_MUX	: MUX_4X1_Generic port map				(Stack_Pointer,Stack_Pointer_plus_2,EX_MEM_Res2_Out,x"00000000",EX_MEM_MeM_In_Adrs_Out,
 															Memory_Address);
 
-Data_Mem			: Data_Memory port map					(Rst=>reset,Clk=>clk,Mem_Write=>EX_MEM_MemWrite_Out,
+Data_Mem			: Data_Memory port map					(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_Final,
 															Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>EX_MEM_MemRead_Out,Push_Pop=>EX_MEM_Push_Pop_Out,
 															SP_Enable=>EX_MEM_SP_Enable_Out,
 															Mem_Out=>Memory_Out,Mem_outRange=>Memory_Out_Range);

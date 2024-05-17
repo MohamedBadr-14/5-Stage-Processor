@@ -27,6 +27,7 @@ mem load -filltype value -filldata 1001000100000000 -fillradix binary /pipeline_
 mem load -filltype value -filldata 1001001000000000 -fillradix binary /pipeline_integration/IC/inst_array(6)
 mem load -filltype value -filldata 1001100000100000 -fillradix binary /pipeline_integration/IC/inst_array(7)
 mem load -filltype value -filldata 1001100001000000 -fillradix binary /pipeline_integration/IC/inst_array(8)
+mem load -filltype value -filldata 0100101000110100 -fillradix binary /pipeline_integration/IC/inst_array(9)
 
 
 force -freeze sim:/pipeline_integration/clk 0 0, 1 {500 ps} -r {1 ns}
