@@ -19,10 +19,12 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	component Program_Counter is
 
 		port(
+			PC_Prev_Val : in std_logic_vector(31 downto 0);
 			enable		: in std_logic;
 			reset		: in std_logic;
 			clk			: in std_logic;
-			PC			: out std_logic_vector(31 downto 0)
+			PC			: out std_logic_vector(31 downto 0);
+			PC_Plus_One : out std_logic_vector(31 downto 0)
 		);
 
 	end component;
@@ -70,6 +72,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 
 		port(
 			clk,reset			: in std_logic;
+			Flush				: in std_logic;
 			IN_PC				: in std_logic_vector(31 downto 0);
 			IN_Inst				: in std_logic_vector(15 downto 0);
 			IN_INPORT			: in std_logic_vector(31 downto 0);
@@ -79,7 +82,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			OUT_INPORT			: out std_logic_vector(31 downto 0);
 			OUT_inst_outRange	: out std_logic
 		);
-
+	
 	end component;
 
 	component my_DFF IS
@@ -119,18 +122,23 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	component Hazard_Detection_Unit is
 
 		port(
-        Cond_Branch 				: in std_logic;
-        unCond_Branch 				: in std_logic;
-        PC_Selector_From_Mem 		: in std_logic;
-        Prediction 					: in std_logic;
-        Cond_Branch_From_EX 		: in std_logic;
-        Prev_Prediction 			: in std_logic;
-        Zero_Flag 					: in std_logic;
-        Should_Branch 				: out std_logic;
-        Should_Not_Branch 			: out std_logic;
-        unCond_or_Prediction 		: out std_logic;
-        OUT_PC_Selector_From_Mem	: out std_logic
-    );
+			Cond_Branch : in std_logic;
+			unCond_Branch : in std_logic;
+			PC_Selector_From_Mem : in std_logic;
+			Prediction : in std_logic;
+			Cond_Branch_From_EX : in std_logic;
+			Prev_Prediction : in std_logic;
+			Zero_Flag : in std_logic;
+			Should_Branch : out std_logic;
+			Should_Not_Branch : out std_logic;
+			unCond_or_Prediction : out std_logic;
+			OUT_PC_Selector_From_Mem : out std_logic;
+			IF_ID_Flush : out std_logic;
+			ID_EX_Flush : out std_logic;
+			EX_MEM_Flush : out std_logic;
+			Enable_PC     : out std_logic;
+			Zero_Flag_Reset     : out std_logic
+    	);
 
 	end component;
 
@@ -172,6 +180,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 
 		port(
 			clk,reset				: in std_logic;
+			Flush					: in std_logic;
 			IN_WB_MemToReg			: in std_logic;
 			IN_WB_RegWrite1			: in std_logic;
 			IN_WB_RegWrite2			: in std_logic;
@@ -195,7 +204,10 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			IN_SP_Enable			: in std_logic;
 			IN_Pout					: in std_logic;
 			IN_Inst_outRange		: in std_logic;
-
+			IN_PC_Selector			: in std_logic;
+			IN_Prediction			: in std_logic;
+			IN_Cond_Branch_flag 	: in std_logic;
+	
 			OUT_WB_MemToReg			: out std_logic;
 			OUT_WB_RegWrite1		: out std_logic;
 			OUT_WB_RegWrite2		: out std_logic;	
@@ -218,8 +230,11 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			OUT_Push_Pop			: out std_logic;
 			OUT_SP_Enable			: out std_logic;
 			OUT_Pout				: out std_logic;
-			OUT_Inst_outRange		: out std_logic
-	);
+			OUT_Inst_outRange		: out std_logic;
+			OUT_PC_Selector			: out std_logic;
+			OUT_Prediction			: out std_logic;
+			OUT_Cond_Branch_flag 	: out std_logic
+		);
 	
 	end component;
 
@@ -263,6 +278,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 
 		port(
 			clk,reset				: in std_logic;
+			Flush					: in std_logic;
 			IN_WB_MemToReg			: in std_logic;
 			IN_WB_RegWrite1			: in std_logic;
 			IN_WB_RegWrite2			: in std_logic;
@@ -280,7 +296,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			IN_Pout					: in std_logic;
 			IN_Inst_outRange		: in std_logic;
 			IN_OVFL					: in std_logic;
-
+			IN_PC_Selector			: in std_logic;
+	
 			OUT_WB_MemToReg			: out std_logic;
 			OUT_WB_RegWrite1		: out std_logic;
 			OUT_WB_RegWrite2		: out std_logic;	
@@ -297,8 +314,9 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			OUT_SP_Enable			: out std_logic;
 			OUT_Pout				: out std_logic;
 			OUT_Inst_outRange		: out std_logic;
-			OUT_OVFL				: out std_logic
-	);
+			OUT_OVFL				: out std_logic;
+			OUT_PC_Selector			: out std_logic
+		);
 	
 	end component;
 
@@ -420,6 +438,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 
 	
 	signal PC_Address 				: std_logic_vector(31 downto 0);
+	signal PC_Plus_One 				: std_logic_vector(31 downto 0);
 	signal IC_Instruction			: std_logic_vector(15 downto 0);
 	signal IC_Inst_Extended			: std_logic_vector(31 downto 0);
 	signal IC_Inst_OutRange			: std_logic;
@@ -434,6 +453,10 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal Cond_Branch				: std_logic := '0';
 	signal unCond_Branch_from_ID	: std_logic := '0';
 	signal PC_Selector_from_MEM		: std_logic := '0';
+	signal IF_ID_Flush 				: std_logic := '0';
+    signal ID_EX_Flush 				: std_logic := '0';
+    signal EX_MEM_Flush 			: std_logic := '0';
+	signal Enable_PC 				: std_logic := '1';
 
 	
 	signal unCond_or_Pred			: std_logic := '0';
@@ -441,9 +464,13 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal Should_Not_Branch		: std_logic := '0';
 	signal PC_Selector_Mem			: std_logic := '0';
 	signal PC_Selector				: std_logic := '0';
-	signal PC_Val					: std_logic_vector(31 downto 0);
 	signal Rdst_Val					: std_logic_vector(31 downto 0);
 	signal Branch_Prediction		: std_logic;
+	signal PC_Val					: std_logic_vector(31 downto 0) := (others => '0');
+	signal OUT_HAZARD_PC_Selector_Mem			: std_logic := '0';
+	signal Zero_Flag_Reset			: std_logic := '0';
+	signal AUX_ZERO_Flag_Reset		: std_logic := '0';
+	signal AUX_Enable_Flag 			: std_logic := '0';
 
 	signal IsInstIn_Buff_Out		: std_logic;
 	signal IsInstOut_Ctrl_Out		: std_logic;
@@ -482,6 +509,9 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal ID_EX_SP_Enable_Out		: std_logic;
 	signal ID_EX_Pout_Out			: std_logic;
 	signal ID_EX_Inst_OutRange		: std_logic;
+	signal ID_EX_PC_Selector_OUT	: std_logic;
+	signal ID_EX_Prediction_OUT		: std_logic;
+	signal ID_EX_Cond_Branch_OUT	: std_logic;
 
 	signal ALU_Sel_Bits				: std_logic_vector(4 downto 0);
 	signal Operand1,Operand2		: std_logic_vector(31 downto 0);		
@@ -511,6 +541,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal EX_MEM_Pout_Out			: std_logic;
 	signal EX_MEM_Inst_OutRange		: std_logic;
 	signal EX_MEM_OVFL				: std_logic;
+	signal EX_MEM_PC_Selector_OUT	: std_logic;
 
 	signal Stack_Pointer			: std_logic_vector(31 downto 0);
 
@@ -533,8 +564,6 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal dummy_MeM_Out			: std_logic_vector(31 downto 0);
 	signal dummy_ALU_Res2			: std_logic_vector(31 downto 0);
 	signal dummy_32bits				: std_logic_vector(31 downto 0); -- It's used always to fill the 8X1 ALU operands MUX
-	signal dummy_Should_Branch      : std_logic;
-	signal dummy_Should_Not_Branch  : std_logic;
 
 	signal Prot_Reg_isProtected		: std_logic;
 	signal MemWrite_Final			: std_logic;
@@ -548,21 +577,24 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 begin
 
 
-	PC		: Program_Counter port map('1',reset,clk,PC_Address);
+	PC		: Program_Counter port map( PC_Val, Enable_PC , reset,clk,PC_Address , PC_Plus_One);
 
-	PC_Circuit_label : PC_Circuit port map(PC_Address, ID_EX_PC_Out , Rdst_Val , ID_EX_Rdst_Val_OUT ,  dummy_MeM_Out , unCond_or_Pred , Should_Branch , Should_Not_Branch , PC_Selector_Mem , PC_Val); --hazard detection unit and forward unit
+	PC_Circuit_label : PC_Circuit port map(PC_Address, ID_EX_PC_Out , Rdst_Val , ID_EX_Rdst_Val_OUT ,  dummy_MeM_Out , unCond_or_Pred , Should_Branch , Should_Not_Branch , OUT_HAZARD_PC_Selector_Mem , PC_Val); --hazard detection unit and forward unit
 
-	IC		: Instruction_Memory port map(PC_Address,'0',IC_Instruction,IC_Inst_OutRange); -- PC_Val is replaced with PC_Address to test
+	Hazard_Det_Unit   : Hazard_Detection_Unit port map (Cond_Branch , unCond_Branch_from_ID , EX_MEM_PC_Selector_OUT , Branch_Prediction, ID_EX_Cond_Branch_OUT , ID_EX_Prediction_OUT , CCR(0), Should_Branch,Should_Not_Branch, unCond_or_Pred, OUT_HAZARD_PC_Selector_Mem,
+	IF_ID_Flush , ID_EX_Flush , EX_MEM_Flush , Enable_PC , Zero_Flag_Reset);
+
+	IC		: Instruction_Memory port map(PC_Val,'0',IC_Instruction,IC_Inst_OutRange); -- PC_Val is replaced with PC_Address to test
 
 	Sign_Extend	: Sign_Extender port map(IC_Instruction,IC_Inst_Extended);
 
-	IF_ID		: IF_ID_Pipe_Reg port map(clk,reset,PC_Address,IC_Instruction,INPORT,IC_Inst_OutRange,IF_ID_PC_Out,IF_ID_Inst_Out,IF_ID_INPORT_OUT,IF_ID_Inst_OutRange);
+	IF_ID		: IF_ID_Pipe_Reg port map(clk,reset,IF_ID_Flush,PC_Plus_One,IC_Instruction,INPORT,IC_Inst_OutRange,IF_ID_PC_Out,IF_ID_Inst_Out,IF_ID_INPORT_OUT,IF_ID_Inst_OutRange);
 
 	Branching_Unit : Branching_Decode port map(IF_ID_Inst_Out(7 downto 5) , RegDst_MUX_Out , ID_EX_DST_10_8_Out , EX_MEM_RegDst_Out , EX_MEM_DST_10_8_Out , 
 	OP2, ALU_Res1 , dummy_ALU_Res2 , EX_MEM_Res1_Out , EX_MEM_Res2_Out , ID_EX_RegWrite1_Out ,ID_EX_RegWrite2_Out, EX_MEM_RegWrite1_Out,
 	EX_MEM_RegWrite2_Out, Rdst_Val);
 
-	Pred : Predictor port map(clk , reset , dummy_Should_Branch ,  dummy_Should_Not_Branch , Branch_Prediction); --output to hazard detection
+	Pred : Predictor port map(clk , reset , Should_Branch ,  Should_Not_Branch , Branch_Prediction); --output to hazard detection
 
 	Imm_Flag_Buffer	: my_DFF port map(IsInstOut_Ctrl_Out,clk,reset,IsInstIn_Buff_Out);
 	
@@ -577,15 +609,17 @@ begin
 
 	OP2_MUX		: MUX_2X1_Generic port map(Rdata2,IC_Inst_Extended,EX_Ctrl_Signal(0),OP2);
 
-	ID_EX		: ID_EX_Pipe_Reg port map(clk,reset,WB_Ctrl_Signal(0),WB_Ctrl_Signal(2),WB_Ctrl_Signal(1),
+	ID_EX		: ID_EX_Pipe_Reg port map(clk,reset,ID_EX_Flush,WB_Ctrl_Signal(0),WB_Ctrl_Signal(2),WB_Ctrl_Signal(1),
 						EX_Ctrl_Signal(3),EX_Ctrl_Signal(2),CCR_Write_Ctrl_Signal,
 						OP1,OP2,IF_ID_Inst_Out(7 downto 5),IF_ID_Inst_Out(4 downto 2),IF_ID_Inst_Out(15 downto 11),
 						IF_ID_Inst_Out(10 downto 8),Rdata1,M_Ctrl_Signal(3),M_Ctrl_Signal(2),M_Ctrl_Signal(1),M_Ctrl_Signal(0),IF_ID_PC_Out,Rdst_Val,
-						P_P_Ctrl_Signal(1),P_P_Ctrl_Signal(0),Pout_Ctrl_Signal,IF_ID_Inst_OutRange,ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
+						P_P_Ctrl_Signal(1),P_P_Ctrl_Signal(0),Pout_Ctrl_Signal,IF_ID_Inst_OutRange,PC_Selector, Branch_Prediction, Cond_Branch,
+						ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
 						ID_EX_ALUOp_Out,ID_EX_RegDst_Out,ID_EX_CCR_Write_Out,ID_EX_OP1_Out,ID_EX_OP2_Out,
 						ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_Opcode_Out,ID_EX_DST_10_8_Out,ID_EX_Rdata2_Prop_Out,ID_EX_MemWrite_Out,
 						ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out,ID_EX_PC_Out,ID_EX_Rdst_Val_OUT,
-						ID_EX_Push_Pop_Out,ID_EX_SP_Enable_Out,ID_EX_Pout_Out,ID_EX_Inst_OutRange);
+						ID_EX_Push_Pop_Out,ID_EX_SP_Enable_Out,ID_EX_Pout_Out,ID_EX_Inst_OutRange,
+						ID_EX_PC_Selector_OUT , ID_EX_Prediction_OUT , ID_EX_Cond_Branch_OUT);
 
 	ALU_CTRL	: ALU_Controller port map(ID_EX_Opcode_Out,ID_EX_ALUOp_Out,ALU_Sel_Bits);
 
@@ -603,7 +637,10 @@ begin
 
 	A_L_U		: ALU port map(ALU_Sel_Bits(0),ALU_Sel_Bits(4 downto 1),Operand1,Operand2,ALU_Res1,ALU_Res2,ALU_Cout,ALU_Flags_Out);
 
-	ZF_Flag_Buffer	: my_DFF_reset0 port map(ALU_Flags_Out(0),clk,reset,ID_EX_CCR_Write_Out(0),CCR(0));
+	AUX_ZERO_Flag_Reset <=  ALU_Flags_Out(0) and (not Zero_Flag_Reset);
+	AUX_Enable_Flag <= ID_EX_CCR_Write_Out(0) or Zero_Flag_Reset;
+
+	ZF_Flag_Buffer	: my_DFF_reset0 port map(AUX_ZERO_Flag_Reset,clk,reset,AUX_Enable_Flag,CCR(0));
 
 	NF_Flag_Buffer	: my_DFF_reset0 port map(ALU_Flags_Out(1),clk,reset,ID_EX_CCR_Write_Out(1),CCR(1));
 
@@ -611,12 +648,13 @@ begin
 
 	OVF_Flag_Buffer	: my_DFF_reset0 port map(ALU_Flags_Out(3),clk,reset,ID_EX_CCR_Write_Out(3),CCR(3));
 
-	EX_MEM		: EX_MEM_Pipe_Reg port map(clk,reset,ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,ID_EX_Rdata2_Prop_Out,
+	EX_MEM		: EX_MEM_Pipe_Reg port map(clk,reset,EX_MEM_Flush,ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,ID_EX_Rdata2_Prop_Out,
 						ALU_Res1,ALU_Res2,RegDst_MUX_Out,ID_EX_DST_10_8_Out,ID_EX_MemWrite_Out,ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,
-						ID_EX_PS_W_EN_Out,ID_EX_Push_Pop_Out,ID_EX_SP_Enable_Out,ID_EX_Pout_Out,ID_EX_Inst_OutRange,CCR(3),EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
+						ID_EX_PS_W_EN_Out,ID_EX_Push_Pop_Out,ID_EX_SP_Enable_Out,ID_EX_Pout_Out,ID_EX_Inst_OutRange,CCR(3),ID_EX_PC_Selector_OUT,
+						EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
 						EX_MEM_Rdata2_Prop_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,
 						EX_MEM_MemWrite_Out,EX_MEM_MemRead_Out,EX_MEM_Protect_Free_Out,EX_MEM_PS_W_EN_Out,EX_MEM_Push_Pop_Out,
-						EX_MEM_SP_Enable_Out,EX_MEM_Pout_Out,EX_MEM_Inst_OutRange,EX_MEM_OVFL);
+						EX_MEM_SP_Enable_Out,EX_MEM_Pout_Out,EX_MEM_Inst_OutRange,EX_MEM_OVFL,EX_MEM_PC_Selector_OUT);
 
 	SP 			: SP_Circuit port map(reset,clk,EX_MEM_SP_Enable_Out,EX_MEM_Push_Pop_Out,Stack_Pointer);
 
@@ -639,5 +677,5 @@ begin
 
 	Exception_out <= CCR(3) or Prot_Reg_isProtected;
 
-	-- Hazard_Det_Unit   : Hazard_Detection_Unit port map 
+	 
 end Pipeline_Integration_arch;

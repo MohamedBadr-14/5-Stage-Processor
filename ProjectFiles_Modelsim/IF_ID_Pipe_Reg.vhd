@@ -6,6 +6,7 @@ entity IF_ID_Pipe_Reg is
 
 	port(
 		clk,reset			: in std_logic;
+		Flush				: in std_logic;
 		IN_PC				: in std_logic_vector(31 downto 0);
 		IN_Inst				: in std_logic_vector(15 downto 0);
 		IN_INPORT			: in std_logic_vector(31 downto 0);
@@ -26,7 +27,7 @@ begin
 	
 	begin
 
-		if (reset = '1') then
+		if (reset = '1' or ( Flush = '1' and rising_edge(clk))) then
 			OUT_PC <= (others => '0');
 			OUT_Inst <= (others => '0');
 			OUT_INPORT <= (others => '0');

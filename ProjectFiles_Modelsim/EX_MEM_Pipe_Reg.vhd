@@ -6,6 +6,7 @@ entity EX_MEM_Pipe_Reg is
 
 	port(
 		clk,reset				: in std_logic;
+		Flush					: in std_logic;
 		IN_WB_MemToReg			: in std_logic;
 		IN_WB_RegWrite1			: in std_logic;
 		IN_WB_RegWrite2			: in std_logic;
@@ -23,6 +24,7 @@ entity EX_MEM_Pipe_Reg is
 		IN_Pout					: in std_logic;
 		IN_Inst_outRange		: in std_logic;
 		IN_OVFL					: in std_logic;
+		IN_PC_Selector			: in std_logic;
 
 		OUT_WB_MemToReg			: out std_logic;
 		OUT_WB_RegWrite1		: out std_logic;
@@ -40,7 +42,8 @@ entity EX_MEM_Pipe_Reg is
 		OUT_SP_Enable			: out std_logic;
 		OUT_Pout				: out std_logic;
 		OUT_Inst_outRange		: out std_logic;
-		OUT_OVFL				: out std_logic
+		OUT_OVFL				: out std_logic;
+		OUT_PC_Selector			: out std_logic
 	);
 
 end entity;
@@ -53,7 +56,7 @@ begin
 	
 	begin
 
-		if (reset = '1') then
+		if (reset = '1' or ( Flush = '1' and rising_edge(clk))) then
 			OUT_WB_MemToReg <= '0';
 			OUT_WB_RegWrite1 <= '0';
 			OUT_WB_RegWrite2 <= '0';
@@ -71,6 +74,8 @@ begin
 			OUT_Pout <= '0';
 			OUT_Inst_outRange <= '0';
 			OUT_OVFL <= '0';
+			OUT_PC_Selector <= '0';
+			
 		elsif rising_edge(clk) then
 			OUT_WB_MemToReg <= IN_WB_MemToReg;
 			OUT_WB_RegWrite1 <= IN_WB_RegWrite1;
@@ -89,6 +94,7 @@ begin
 			OUT_Pout <= IN_Pout;
 			OUT_Inst_outRange <= IN_Inst_outRange;
 			OUT_OVFL <= IN_OVFL;
+			OUT_PC_Selector <= IN_PC_Selector;
 		end if;
 
 	end process;
