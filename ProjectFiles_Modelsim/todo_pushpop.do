@@ -18,18 +18,6 @@ mem load -filltype value -filldata 1001001000000000 -fillradix binary /pipeline_
 mem load -filltype value -filldata 1001000100000000 -fillradix binary /pipeline_integration/IC/inst_array(4)
 mem load -filltype value -filldata 1001100000100000 -fillradix binary /pipeline_integration/IC/inst_array(5)
 mem load -filltype value -filldata 1001100001000000 -fillradix binary /pipeline_integration/IC/inst_array(6)
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(7) 
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(8)
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(9) 
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(10)
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(11) 
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(12) 
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(13)
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(14) 
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(15) 
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(16) 
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(17) 
-mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(18) 
 
 
 force -freeze sim:/pipeline_integration/clk 0 0, 1 {500 ps} -r {1 ns}
