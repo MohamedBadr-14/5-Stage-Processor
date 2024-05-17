@@ -2,11 +2,11 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 ENTITY SixteenBitAdder IS
     generic (n: integer := 8);
-	PORT (a,b : IN  std_logic_vector(n-1 downto 0);
-          cin : in std_logic;
-		  s : out std_logic_vector(n-1 downto 0);
-           cout : OUT std_logic 
-	  
+	PORT (  a,b     : IN  std_logic_vector(n-1 downto 0);
+            cin     : in std_logic;
+		    s       : out std_logic_vector(n-1 downto 0);
+            cout    : OUT std_logic;
+            ovf     : OUT std_logic
 );
 		
 	
@@ -23,10 +23,10 @@ component my_nadder IS
 END component;
 component select_adder IS
     generic (n: integer := 4);
-	PORT (a,b : IN  std_logic_vector(n-1 downto 0);
-          cin : in std_logic;
-		  s : out std_logic_vector(n-1 downto 0);
-           cout : OUT std_logic );
+	PORT (  a,b     : IN  std_logic_vector(n-1 downto 0);
+            cin     : in std_logic;
+		    s       : out std_logic_vector(n-1 downto 0);
+            cout    : OUT std_logic );
 END component;
 	constant SELECT_ADDER_Numbers : integer := n / 4;
         SIGNAL temp : std_logic_vector(SELECT_ADDER_Numbers DOWNTO 0);
@@ -42,7 +42,9 @@ Begin
         fx: select_adder GENERIC MAP (4) PORT MAP(a((4 * i + 3) downto (4 * i)), b((4 * i + 3) downto (4 * i)), temp(i),s((4 * i + 3) downto (4 * i)),temp(i+1));
 END GENERATE;
 	
-    
-   cout<=temp(SELECT_ADDER_Numbers);
+
+    ovf <= temp (SELECT_ADDER_Numbers) xor temp (SELECT_ADDER_Numbers-1);
+
+    cout<=temp(SELECT_ADDER_Numbers);
 
 END SixteenBitAdder_arch;
