@@ -17,6 +17,7 @@ entity Controller is
 		PC_Selector 	: OUT std_logic;
 		Push_Pop_Ctrl	: OUT std_logic_vector(1 downto 0); -- bit1 : Push/Pop / bit0 : SP_Enable
 		Pout			: OUT std_logic
+		M_DataMeM		: OUT std_logic_vector(3 downto 0); -- bit3 and bit2 : MeM_In_Adrs / bit1 and bit0 : MeM_Data
     	);
 
 end entity;
@@ -114,7 +115,17 @@ begin
 	ELSE "1001" WHEN opcode = "10111" -- Free
 	ELSE "0000";
 
+	--bit3 and bit2 : MeM_In_Adrs / bit1 and bit0 : MeM_Data
+	M_DataMeM <= "0001" WHEN opcode = "10010" -- Push
+	ELSE 		 "0000" WHEN opcode = "10011" -- Pop
+	ELSE 		 "1000" WHEN opcode = "10100" -- LDD
+	ELSE 		 "1000" WHEN opcode = "10101" -- STD
+	--ELSE 		 "0011" WHEN opcode = "10110" -- Protect
+	--ELSE 		 "1001" WHEN opcode = "10111" -- Free
+	ELSE 		 "0000";
 
+
+	-- bit1 : Push/Pop / bit0 : SP_Enable
 	Push_Pop_Ctrl <= "01" WHEN opcode = "10010" -- Push
 	ELSE 			 "11" WHEN opcode = "10011" -- Pop
 	ELSE 			 "01" WHEN opcode = "11010" -- Call

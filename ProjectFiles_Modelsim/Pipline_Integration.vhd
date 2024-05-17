@@ -100,21 +100,22 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 		);
 	END component;
 
-	Component Controller is
+	component Controller is
 
 		port(
 			opcode 			: IN std_logic_vector(4 DOWNTO 0);
 			IsInstIn		: IN std_logic;
 			CCR_Write		: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : OVF / bit2: CF / bit1 : NF / bit0 : ZF
 			EX 				: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : ALUOp / bit2 : RegDst / bit1 : ALUSrc1 / bit0 : ALUSrc2
-			WB 				: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2/ bit0 : MemToReg
+			WB 				: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2 / bit0 : MemToReg
 			M 				: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : MemWrite / bit2 : MemRead / bit1 : Protect_Free / bit0 : PS_W_EN
 			IsInstOut		: OUT std_logic;
 			Cond_Branch 	: OUT std_logic;
 			unCond_Branch	: OUT std_logic;
 			PC_Selector 	: OUT std_logic;
-			Push_Pop_Ctrl 	: OUT std_logic_vector(1 downto 0);-- bit1 : Push/Pop / bit0 : SP_Enable
+			Push_Pop_Ctrl	: OUT std_logic_vector(1 downto 0); -- bit1 : Push/Pop / bit0 : SP_Enable
 			Pout			: OUT std_logic
+			M_DataMeM		: OUT std_logic_vector(3 downto 0); -- bit3 and bit2 : MeM_In_Adrs / bit1 and bit0 : MeM_Data
 			);
 	
 	end component;
@@ -403,6 +404,18 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 
 	end component;
 
+	component MUX_4X1_Generic is 
+		generic (n : Integer := 32);
+
+		port( 
+			in0,in1,in2,in3 	: in std_logic_vector (n-1 DOWNTO 0);
+			sel 				: in std_logic_vector (1 downto 0);
+			out1 				: out std_logic_vector (n-1 DOWNTO 0)
+		);
+
+	end component;
+	
+
 	component MUX_8X1_Generic is 
 		generic (n : Integer := 32);
 
@@ -425,15 +438,19 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	end component;
 
 	component Data_Memory is
+
 		port(
 			Rst,Clk         : in std_logic;
 			Mem_Write   	: in std_logic;
 			Address         : in std_logic_vector(31 downto 0);
 			Data            : in std_logic_vector(31 downto 0);
 			Mem_Read        : in std_logic;
+			Push_Pop        : in std_logic;
+			SP_Enable       : in std_logic;
 			Mem_Out         : out std_logic_vector(31 downto 0);
-			Mem_outRange	: out std_logic
+			Mem_outRange    : out std_logic
 		);
+	
 	end component;
 
 	
@@ -480,6 +497,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal M_Ctrl_Signal			: std_logic_vector(3 downto 0);
 	signal P_P_Ctrl_Signal			: std_logic_vector(1 downto 0);
 	signal Pout_Ctrl_Signal			: std_logic;
+	signal M_DataMeM_Ctrl_Signal	: std_logic_vector(3 dowwto 0);
 	signal Rdata1,Rdata2			: std_logic_vector(31 downto 0);
 	signal OP1,OP2					: std_logic_vector(31 downto 0);
 
@@ -512,6 +530,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal ID_EX_PC_Selector_OUT	: std_logic;
 	signal ID_EX_Prediction_OUT		: std_logic;
 	signal ID_EX_Cond_Branch_OUT	: std_logic;
+	signal ID_EX_MeM_In_Adrs_Out	: std_logic_vector(1 downto 0);
+	signal ID_EX_MeM_Data_Out		: std_logic_vector(1 downto 0);
 
 	signal ALU_Sel_Bits				: std_logic_vector(4 downto 0);
 	signal Operand1,Operand2		: std_logic_vector(31 downto 0);		
@@ -542,8 +562,11 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal EX_MEM_Inst_OutRange		: std_logic;
 	signal EX_MEM_OVFL				: std_logic;
 	signal EX_MEM_PC_Selector_OUT	: std_logic;
+	signal EX_MEM_MeM_In_Adrs_Out	: std_logic_vector(1 downto 0);
+	signal EX_MEM_MeM_Data_Out		: std_logic_vector(1 downto 0);
 
 	signal Stack_Pointer			: std_logic_vector(31 downto 0);
+	signal Stack_Pointer_plus_2		: std_logic_vector(31 downto 0);
 
 	signal MEM_WB_MemToReg_Out		: std_logic;
 	signal MEM_WB_RegWrite1_Out		: std_logic;
@@ -572,6 +595,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal Memory_Address			: std_logic_vector(31 downto 0);
 	signal Memory_Out				: std_logic_vector(31 downto 0);
 	signal Memory_Out_Range			: std_logic;
+
+	signal dummy_Added_PC			: std_logic_vector(31 downto 0);
 	
 	
 begin
@@ -605,7 +630,7 @@ Imm_Flag_Buffer		: my_DFF port map						(IsInstOut_Ctrl_Out,clk,reset,IsInstIn_B
 	
 ID_Controller 		: Controller port map					(IF_ID_Inst_Out(15 downto 11),IsInstIn_Buff_Out,CCR_Write_Ctrl_Signal,
 															EX_Ctrl_Signal,WB_Ctrl_Signal,M_Ctrl_Signal,IsInstOut_Ctrl_Out , Cond_Branch , 
-															unCond_Branch_from_ID , PC_Selector, P_P_Ctrl_Signal, Pout_Ctrl_Signal);
+															unCond_Branch_from_ID , PC_Selector, P_P_Ctrl_Signal, Pout_Ctrl_Signal,M_DataMeM_Ctrl_Signal);
 
 Reg_File			: Register_File port map				(IF_ID_Inst_Out(10 downto 8),IF_ID_Inst_Out(7 downto 5),MEM_WB_RegDst_Out,
 															MEM_WB_DST_10_8_Out,WB_Data_1,MEM_WB_Res2_Out,MEM_WB_RegWrite1_Out,
@@ -620,12 +645,14 @@ ID_EX				: ID_EX_Pipe_Reg port map				(clk,reset,ID_EX_Flush,WB_Ctrl_Signal(0),W
 															OP1,OP2,IF_ID_Inst_Out(7 downto 5),IF_ID_Inst_Out(4 downto 2),IF_ID_Inst_Out(15 downto 11),
 															IF_ID_Inst_Out(10 downto 8),Rdata1,M_Ctrl_Signal(3),M_Ctrl_Signal(2),M_Ctrl_Signal(1),M_Ctrl_Signal(0),IF_ID_PC_Out,Rdst_Val,
 															P_P_Ctrl_Signal(1),P_P_Ctrl_Signal(0),Pout_Ctrl_Signal,IF_ID_Inst_OutRange,PC_Selector, Branch_Prediction, Cond_Branch,
+															M_DataMeM_Ctrl_Signal(3 downto 2),M_DataMeM_Ctrl_Signal(1 downto 0),
 															ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
 															ID_EX_ALUOp_Out,ID_EX_RegDst_Out,ID_EX_CCR_Write_Out,ID_EX_OP1_Out,ID_EX_OP2_Out,
 															ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_Opcode_Out,ID_EX_DST_10_8_Out,ID_EX_Rdata2_Prop_Out,ID_EX_MemWrite_Out,
 															ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out,ID_EX_PC_Out,ID_EX_Rdst_Val_OUT,
 															ID_EX_Push_Pop_Out,ID_EX_SP_Enable_Out,ID_EX_Pout_Out,ID_EX_Inst_OutRange,
-															ID_EX_PC_Selector_OUT , ID_EX_Prediction_OUT , ID_EX_Cond_Branch_OUT);
+															ID_EX_PC_Selector_OUT , ID_EX_Prediction_OUT , ID_EX_Cond_Branch_OUT
+															ID_EX_MeM_In_Adrs_Out,ID_EX_MeM_Data_Out);
 
 ALU_CTRL			: ALU_Controller port map				(ID_EX_Opcode_Out,ID_EX_ALUOp_Out,ALU_Sel_Bits);
 
@@ -658,20 +685,33 @@ EX_MEM				: EX_MEM_Pipe_Reg port map				(clk,reset,EX_MEM_Flush,ID_EX_MemToReg_O
 															ID_EX_RegWrite2_Out,ID_EX_Rdata2_Prop_Out,
 															ALU_Res1,ALU_Res2,RegDst_MUX_Out,ID_EX_DST_10_8_Out,ID_EX_MemWrite_Out,ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,
 															ID_EX_PS_W_EN_Out,ID_EX_Push_Pop_Out,ID_EX_SP_Enable_Out,ID_EX_Pout_Out,ID_EX_Inst_OutRange,CCR(3),ID_EX_PC_Selector_OUT,
+															ID_EX_MeM_In_Adrs_Out,ID_EX_MeM_Data_Out,
 															EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
 															EX_MEM_Rdata2_Prop_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,
 															EX_MEM_MemWrite_Out,EX_MEM_MemRead_Out,EX_MEM_Protect_Free_Out,EX_MEM_PS_W_EN_Out,EX_MEM_Push_Pop_Out,
-															EX_MEM_SP_Enable_Out,EX_MEM_Pout_Out,EX_MEM_Inst_OutRange,EX_MEM_OVFL,EX_MEM_PC_Selector_OUT);
+															EX_MEM_SP_Enable_Out,EX_MEM_Pout_Out,EX_MEM_Inst_OutRange,EX_MEM_OVFL,EX_MEM_PC_Selector_OUT,
+															EX_MEM_MeM_In_Adrs_Out,EX_MEM_MeM_Data_Out);
 
 SP 					: SP_Circuit port map					(reset,clk,EX_MEM_SP_Enable_Out,EX_MEM_Push_Pop_Out,Stack_Pointer);
+
+Memory_Data_MUX		: MUX_4X1_Generic port map				(EX_MEM_Rdata2_Prop_Out,EX_MEM_Res1_Out,dummy_Added_PC,x"00000000",
+															EX_MEM_MeM_Data_Out,Memory_Data);
+
+Stack_Pointer_plus_2 <= std_logic_vector(to_unsigned((to_integer(unsigned(Stack_Pointer)) + 2),32));
+
+Memory_Address_MUX	: MUX_4X1_Generic port map				(Stack_Pointer,Stack_Pointer_plus_2,EX_MEM_Res2_Out,x"00000000",EX_MEM_MeM_In_Adrs_Out,
+															Memory_Address);
+
+Data_Mem			: Data_Memory port map					(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_Final,
+															Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>EX_MEM_MemRead_Out,Push_Pop=>EX_MEM_Push_Pop_Out,
+															SP_Enable=>EX_MEM_SP_Enable_Out,
+															Mem_Out=>Memory_Out,Mem_outRange=>Memory_Out_Range);
 
 PSR					: ProtectStatusRegister port map		(RST=>reset, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>ALU_Res1, 
 															Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected);
 
 MemWrite_Final <= not(Prot_Reg_isProtected) AND EX_MEM_MemWrite_Out;
 
-Data_Mem			: Data_Memory port map					(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_Final,
-															Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>EX_MEM_MemRead_Out,Mem_Out=>Memory_Out,Mem_outRange=>Memory_Out_Range);
 
 MEM_WB				: MEM_WB_Pipe_Reg port map				(clk,reset,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
 															dummy_MeM_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,EX_MEM_Pout_Out,EX_MEM_Inst_OutRange,EX_MEM_OVFL,Prot_Reg_isProtected,Memory_Out_Range,

@@ -33,6 +33,8 @@ entity ID_EX_Pipe_Reg is
 		IN_PC_Selector			: in std_logic;
 		IN_Prediction			: in std_logic;
 		IN_Cond_Branch_flag 	: in std_logic;
+		IN_MeM_In_Adrs			: in std_logic_vector(1 downto 0);
+		IN_MeM_Data				: in std_logic_vector(1 downto 0);
 
 		OUT_WB_MemToReg			: out std_logic;
 		OUT_WB_RegWrite1		: out std_logic;
@@ -59,7 +61,9 @@ entity ID_EX_Pipe_Reg is
 		OUT_Inst_outRange		: out std_logic;
 		OUT_PC_Selector			: out std_logic;
 		OUT_Prediction			: out std_logic;
-		OUT_Cond_Branch_flag 	: out std_logic
+		OUT_Cond_Branch_flag 	: out std_logic;
+		OUT_MeM_In_Adrs			: out std_logic_vector(1 downto 0);
+		OUT_MeM_Data			: out std_logic_vector(1 downto 0)
 	);
 
 end entity;
@@ -99,6 +103,9 @@ begin
 			OUT_PC_Selector <= '0';
 			OUT_Prediction <= '0';
 			OUT_Cond_Branch_flag <= '0';
+			OUT_MeM_In_Adrs <= "00";
+			OUT_MeM_Data <= "00";
+
 		elsif rising_edge(clk) then
 			OUT_WB_MemToReg <= IN_WB_MemToReg;		
 			OUT_WB_RegWrite1 <=IN_WB_RegWrite1;	
@@ -126,6 +133,8 @@ begin
 			OUT_PC_Selector <= IN_PC_Selector;
 			OUT_Prediction <= IN_Prediction;
 			OUT_Cond_Branch_flag <= IN_Cond_Branch_flag;
+			OUT_MeM_In_Adrs <= IN_MeM_In_Adrs;
+			OUT_MeM_Data <= IN_MeM_Data;
 		end if;
 
 	end process;

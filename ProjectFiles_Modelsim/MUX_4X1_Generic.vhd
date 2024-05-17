@@ -7,8 +7,8 @@ entity MUX_4X1_Generic is
 
 	port( 
 		in0,in1,in2,in3 	: in std_logic_vector (n-1 DOWNTO 0);
-		sel 			: in std_logic_vector (1 downto 0);
-		out1 			: out std_logic_vector (n-1 DOWNTO 0)
+		sel 				: in std_logic_vector (1 downto 0);
+		out1 				: out std_logic_vector (n-1 DOWNTO 0)
 	);
 
 end entity;

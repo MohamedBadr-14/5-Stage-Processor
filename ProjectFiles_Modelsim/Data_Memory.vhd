@@ -10,6 +10,8 @@ entity Data_Memory is
         Address         : in std_logic_vector(31 downto 0);
 		Data            : in std_logic_vector(31 downto 0);
 		Mem_Read        : in std_logic;
+        Push_Pop        : in std_logic;
+        SP_Enable       : in std_logic;
 		Mem_Out         : out std_logic_vector(31 downto 0);
         Mem_outRange    : out std_logic
 	);
@@ -23,7 +25,7 @@ Architecture Data_Memory_Arch of Data_Memory is
 
 begin
 
-	process(Clk,Rst)
+	process(ALL)
 	begin
 
 		if Rst = '1' then
@@ -37,8 +39,13 @@ begin
                     Mem_outRange <= '1';
                 else
                     Mem_outRange <= '0';
-                    data_array(to_integer(unsigned(Address))) <= Data(31 downto 16);
-                    data_array(to_integer(unsigned(Address)) + 1) <= Data(15 downto 0);
+                    if SP_Enable = '0' then
+                        data_array(to_integer(unsigned(Address))) <= Data(15 downto 0);
+                        data_array(to_integer(unsigned(Address)) + 1) <= Data(31 downto 16);
+                    elsif SP_Enable = '1' and Push_Pop = '0' then -- Push
+                        data_array(to_integer(unsigned(Address))) <= Data(31 downto 16);
+                        data_array(to_integer(unsigned(Address)) - 1) <= Data(15 downto 0);
+                    end if;                     
                 end if;
             end if;
         end if;
@@ -52,8 +59,13 @@ begin
                 Mem_outRange <= '1';
             else
                 Mem_outRange <= '0';
-                Mem_Out(31 downto 16) <= data_array(to_integer(unsigned(Address)));
-                Mem_Out(15 downto 0) <= data_array(to_integer(unsigned(Address)) + 1);
+                if SP_Enable = '0' then
+                    Mem_Out(15 downto 0) <= data_array(to_integer(unsigned(Address)));
+                    Mem_Out(31 downto 16) <= data_array(to_integer(unsigned(Address)) + 1);
+                elsif SP_Enable = '1' and Push_Pop = '1' then -- Pop
+                    Mem_Out(31 downto 16) <= data_array(to_integer(unsigned(Address)));
+                    Mem_Out(15 downto 0) <= data_array(to_integer(unsigned(Address)) + 1);
+                end if;
             end if;
         end if;
     end process;
