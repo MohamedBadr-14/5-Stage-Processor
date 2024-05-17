@@ -13,7 +13,7 @@ BEGIN
 	BEGIN
 		IF(rst = '1') THEN
             Decision <= '0';
-		ELSIF clk'event and clk = '1' and ((Should_Branch = '1' and Decision = '0') or (Shoud_Not_Branch = '1' and Decision ='1')) THEN
+		ELSIF clk'event and ((Should_Branch = '1' and Decision = '0') or (Shoud_Not_Branch = '1' and Decision ='1')) THEN
             Decision <= not Decision;
 		END IF;
 	END PROCESS;

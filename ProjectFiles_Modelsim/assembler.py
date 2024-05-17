@@ -11,8 +11,9 @@ def adjust_instruction(instruction):
         instruction[1], instruction[2], instruction[3] = instruction[2], instruction[3], instruction[1]
 
     elif opcode == 'not' or opcode == 'neg' or opcode == 'inc' or opcode == 'dec': #not rdst
-        instruction.append(instruction[1])
         instruction.append('0')
+        instruction.append('0')
+        instruction[1], instruction[2], instruction[3] = '0', '0', instruction[1] #to be tested badrrrrr
 
     elif opcode == 'ldd': #LDD Rdst, EA(Rsrc1)
          tmp = instruction[2]
