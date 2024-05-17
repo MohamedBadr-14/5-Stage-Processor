@@ -43,3 +43,16 @@ run
 
 force -freeze sim:/pipeline_integration/reset 0 0
 
+force -freeze sim:/pipeline_integration/INPORT 00000005 0
+run
+
+force -freeze sim:/pipeline_integration/INPORT 00000019 0
+run
+
+force -freeze sim:/pipeline_integration/INPORT FFFFFFFF 0
+run
+
+force -freeze sim:/pipeline_integration/INPORT FFFFF320 0
+run
+
+force -freeze sim:/pipeline_integration/INPORT 00000000 0
