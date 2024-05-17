@@ -29,7 +29,8 @@ PORT(
 		S		:IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
 		A,B		:IN  STD_LOGIC_VECTOR(n-1 DOWNTO 0);
 		F		:OUT STD_LOGIC_VECTOR(n-1 DOWNTO 0);
-		Cout	:OUT STD_LOGIC
+		Cout	:OUT STD_LOGIC;
+		ovf		:OUT STD_LOGIC
 );
 
 end Component;
@@ -52,7 +53,7 @@ SIGNAL Cout_AUX			: std_logic;
 begin
 
 parta:ALUparta
-GENERIC MAP (n) PORT MAP (A=>A,B=>B,S=>S,Cin=>Cin,F=>Fa,Cout=>Couta);
+GENERIC MAP (n) PORT MAP (A=>A,B=>B,S=>S,Cin=>Cin,F=>Fa,Cout=>Couta,ovf=>Flags(3);
 
 partb:ALUpartb
 GENERIC MAP (n) PORT MAP (A=>A,B=>B,S=>S,Cin=>Cin,F=>Fb,Cout=>Coutb);
@@ -69,13 +70,17 @@ Sel_AUX <= (S & Cin);
 		 '0'       when   others;
 
  --Overflow Flag
-Flags(3) <= '1' WHEN (F_AUX(31) = '0' and A(31) = '1' and B(31) = '1') or (F_AUX(31) = '1' and A(31) = '0' and B(31) = '0')
-			else '0';
+-- Flags(3) <= 
+-- 			'1' WHEN (F_AUX(31) = '0' and A(31) = '1' and B(31) = '1') or (F_AUX(31) = '1' and A(31) = '0' and B(31) = '0') and ((Sel_AUX = "00001") or (Sel_AUX = "00100")),
+-- 			'1' WHEN (F_AUX(31) = '1' and A(31) = '0' and B(31) = '1') or (F_AUX(31) = '0' and A(31) = '11' and B(31) = '0') and ((Sel_AUX = "00010") or (Sel_AUX = "00110")),
+
+-- 			else '0';
 		
  --Carry Flag
 Flags(2) <= Cout_AUX;
 		
-with F_AUX(31) select --Negative Flag
+--Negative Flag
+with F_AUX(31) select
 Flags(1) <= 
 		'1'				when    '1' ,
 		'0'				when    others;

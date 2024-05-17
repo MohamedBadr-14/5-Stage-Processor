@@ -10,7 +10,8 @@ PORT(
 		S		:IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
 		A,B		:IN  STD_LOGIC_VECTOR(n-1 DOWNTO 0);
 		F		:OUT STD_LOGIC_VECTOR(n-1 DOWNTO 0);
-		Cout	:OUT STD_LOGIC
+		Cout	:OUT STD_LOGIC;
+		ovf		:OUT STD_LOGIC
 );
 
 end entity;
@@ -29,7 +30,8 @@ Architecture ALUparta_arch of ALUparta is
 	PORT (a,b : IN  std_logic_vector(n-1 downto 0);
           cin : in std_logic;
 			s : out std_logic_vector(n-1 downto 0);
-         cout : OUT std_logic );
+         cout : OUT std_logic 
+		  ovf : OUT std_logic);
 	END Component;
 	
 begin
@@ -56,7 +58,7 @@ Cin_sel <=
 		'1'				when "00011" ,
 		'0' 			when  others;
 
-out1:	SixteenBitAdder generic map(n) PORT MAP(a=>A_sel,b=>B_sel,cin=>Cin_sel,s=>F_AUX,cout=>Cout_AUX);
+out1:	SixteenBitAdder generic map(n) PORT MAP(a=>A_sel,b=>B_sel,cin=>Cin_sel,s=>F_AUX,cout=>Cout_AUX,ovf=>ovf);
 
 with Sel_AUX select 
 F <= 
