@@ -577,103 +577,110 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 begin
 
 
-	PC		: Program_Counter port map( PC_Val, Enable_PC , reset,clk,PC_Address , PC_Plus_One);
+PC					: Program_Counter port map				( PC_Val, Enable_PC , reset,clk,PC_Address , PC_Plus_One);
 
-	PC_Circuit_label : PC_Circuit port map(PC_Address, ID_EX_PC_Out , Rdst_Val , ID_EX_Rdst_Val_OUT ,  dummy_MeM_Out , unCond_or_Pred , Should_Branch , Should_Not_Branch , OUT_HAZARD_PC_Selector_Mem , PC_Val); --hazard detection unit and forward unit
+PC_Circuit_label 	: PC_Circuit port map					(PC_Address, ID_EX_PC_Out , Rdst_Val , ID_EX_Rdst_Val_OUT ,  
+															dummy_MeM_Out , unCond_or_Pred , Should_Branch , Should_Not_Branch , 
+															OUT_HAZARD_PC_Selector_Mem , PC_Val); --hazard detection unit and forward unit
 
-	Hazard_Det_Unit   : Hazard_Detection_Unit port map (Cond_Branch , unCond_Branch_from_ID , EX_MEM_PC_Selector_OUT , Branch_Prediction, ID_EX_Cond_Branch_OUT , ID_EX_Prediction_OUT , CCR(0), Should_Branch,Should_Not_Branch, unCond_or_Pred, OUT_HAZARD_PC_Selector_Mem,
-	IF_ID_Flush , ID_EX_Flush , EX_MEM_Flush , Enable_PC , Zero_Flag_Reset);
+Hazard_Det_Unit   	: Hazard_Detection_Unit port map 		(Cond_Branch , unCond_Branch_from_ID , EX_MEM_PC_Selector_OUT , Branch_Prediction,
+														  	ID_EX_Cond_Branch_OUT , ID_EX_Prediction_OUT , CCR(0), Should_Branch,Should_Not_Branch, 
+														  	unCond_or_Pred, OUT_HAZARD_PC_Selector_Mem, IF_ID_Flush , ID_EX_Flush , EX_MEM_Flush , 
+														  	Enable_PC , Zero_Flag_Reset);
 
-	IC		: Instruction_Memory port map(PC_Val,'0',IC_Instruction,IC_Inst_OutRange); -- PC_Val is replaced with PC_Address to test
+IC					: Instruction_Memory port map			(PC_Val,'0',IC_Instruction,IC_Inst_OutRange); -- PC_Val is replaced with PC_Address to test
 
-	Sign_Extend	: Sign_Extender port map(IC_Instruction,IC_Inst_Extended);
+Sign_Extend			: Sign_Extender port map				(IC_Instruction,IC_Inst_Extended);
 
-	IF_ID		: IF_ID_Pipe_Reg port map(clk,reset,IF_ID_Flush,PC_Plus_One,IC_Instruction,INPORT,IC_Inst_OutRange,IF_ID_PC_Out,IF_ID_Inst_Out,IF_ID_INPORT_OUT,IF_ID_Inst_OutRange);
+IF_ID				: IF_ID_Pipe_Reg port map				(clk,reset,IF_ID_Flush,PC_Plus_One,IC_Instruction,INPORT,IC_Inst_OutRange,
+															IF_ID_PC_Out,IF_ID_Inst_Out,IF_ID_INPORT_OUT,IF_ID_Inst_OutRange);
 
-	Branching_Unit : Branching_Decode port map(IF_ID_Inst_Out(7 downto 5) , RegDst_MUX_Out , ID_EX_DST_10_8_Out , EX_MEM_RegDst_Out , EX_MEM_DST_10_8_Out , 
-	OP2, ALU_Res1 , dummy_ALU_Res2 , EX_MEM_Res1_Out , EX_MEM_Res2_Out , ID_EX_RegWrite1_Out ,ID_EX_RegWrite2_Out, EX_MEM_RegWrite1_Out,
-	EX_MEM_RegWrite2_Out, Rdst_Val);
+Branching_Unit 		: Branching_Decode port map				(IF_ID_Inst_Out(7 downto 5) , RegDst_MUX_Out , ID_EX_DST_10_8_Out , EX_MEM_RegDst_Out , 
+															EX_MEM_DST_10_8_Out , OP2, ALU_Res1 , dummy_ALU_Res2 , EX_MEM_Res1_Out , EX_MEM_Res2_Out ,
+															ID_EX_RegWrite1_Out ,ID_EX_RegWrite2_Out, EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out, Rdst_Val);
 
-	Pred : Predictor port map(clk , reset , Should_Branch ,  Should_Not_Branch , Branch_Prediction); --output to hazard detection
+Pred 				: Predictor port map					(clk , reset , Should_Branch ,  Should_Not_Branch , Branch_Prediction); --output to hazard detection
 
-	Imm_Flag_Buffer	: my_DFF port map(IsInstOut_Ctrl_Out,clk,reset,IsInstIn_Buff_Out);
+Imm_Flag_Buffer		: my_DFF port map						(IsInstOut_Ctrl_Out,clk,reset,IsInstIn_Buff_Out);
 	
-	ID_Controller 	: Controller port map(IF_ID_Inst_Out(15 downto 11),IsInstIn_Buff_Out,CCR_Write_Ctrl_Signal,EX_Ctrl_Signal,WB_Ctrl_Signal,M_Ctrl_Signal,
-						IsInstOut_Ctrl_Out , Cond_Branch , unCond_Branch_from_ID , PC_Selector, P_P_Ctrl_Signal, Pout_Ctrl_Signal);
+ID_Controller 		: Controller port map					(IF_ID_Inst_Out(15 downto 11),IsInstIn_Buff_Out,CCR_Write_Ctrl_Signal,
+															EX_Ctrl_Signal,WB_Ctrl_Signal,M_Ctrl_Signal,IsInstOut_Ctrl_Out , Cond_Branch , 
+															unCond_Branch_from_ID , PC_Selector, P_P_Ctrl_Signal, Pout_Ctrl_Signal);
 
-	Reg_File	: Register_File port map(IF_ID_Inst_Out(10 downto 8),IF_ID_Inst_Out(7 downto 5),MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,
-						WB_Data_1,MEM_WB_Res2_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
-						reset,clk,Rdata1,Rdata2);
+Reg_File			: Register_File port map				(IF_ID_Inst_Out(10 downto 8),IF_ID_Inst_Out(7 downto 5),MEM_WB_RegDst_Out,
+															MEM_WB_DST_10_8_Out,WB_Data_1,MEM_WB_Res2_Out,MEM_WB_RegWrite1_Out,
+															MEM_WB_RegWrite2_Out,reset,clk,Rdata1,Rdata2);
 
-	OP1_MUX		: MUX_2X1_Generic port map(Rdata1,IF_ID_INPORT_OUT,EX_Ctrl_Signal(1),OP1);
+OP1_MUX				: MUX_2X1_Generic port map				(Rdata1,IF_ID_INPORT_OUT,EX_Ctrl_Signal(1),OP1);
 
-	OP2_MUX		: MUX_2X1_Generic port map(Rdata2,IC_Inst_Extended,EX_Ctrl_Signal(0),OP2);
+OP2_MUX				: MUX_2X1_Generic port map				(Rdata2,IC_Inst_Extended,EX_Ctrl_Signal(0),OP2);
 
-	ID_EX		: ID_EX_Pipe_Reg port map(clk,reset,ID_EX_Flush,WB_Ctrl_Signal(0),WB_Ctrl_Signal(2),WB_Ctrl_Signal(1),
-						EX_Ctrl_Signal(3),EX_Ctrl_Signal(2),CCR_Write_Ctrl_Signal,
-						OP1,OP2,IF_ID_Inst_Out(7 downto 5),IF_ID_Inst_Out(4 downto 2),IF_ID_Inst_Out(15 downto 11),
-						IF_ID_Inst_Out(10 downto 8),Rdata1,M_Ctrl_Signal(3),M_Ctrl_Signal(2),M_Ctrl_Signal(1),M_Ctrl_Signal(0),IF_ID_PC_Out,Rdst_Val,
-						P_P_Ctrl_Signal(1),P_P_Ctrl_Signal(0),Pout_Ctrl_Signal,IF_ID_Inst_OutRange,PC_Selector, Branch_Prediction, Cond_Branch,
-						ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
-						ID_EX_ALUOp_Out,ID_EX_RegDst_Out,ID_EX_CCR_Write_Out,ID_EX_OP1_Out,ID_EX_OP2_Out,
-						ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_Opcode_Out,ID_EX_DST_10_8_Out,ID_EX_Rdata2_Prop_Out,ID_EX_MemWrite_Out,
-						ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out,ID_EX_PC_Out,ID_EX_Rdst_Val_OUT,
-						ID_EX_Push_Pop_Out,ID_EX_SP_Enable_Out,ID_EX_Pout_Out,ID_EX_Inst_OutRange,
-						ID_EX_PC_Selector_OUT , ID_EX_Prediction_OUT , ID_EX_Cond_Branch_OUT);
+ID_EX				: ID_EX_Pipe_Reg port map				(clk,reset,ID_EX_Flush,WB_Ctrl_Signal(0),WB_Ctrl_Signal(2),WB_Ctrl_Signal(1),
+															EX_Ctrl_Signal(3),EX_Ctrl_Signal(2),CCR_Write_Ctrl_Signal,
+															OP1,OP2,IF_ID_Inst_Out(7 downto 5),IF_ID_Inst_Out(4 downto 2),IF_ID_Inst_Out(15 downto 11),
+															IF_ID_Inst_Out(10 downto 8),Rdata1,M_Ctrl_Signal(3),M_Ctrl_Signal(2),M_Ctrl_Signal(1),M_Ctrl_Signal(0),IF_ID_PC_Out,Rdst_Val,
+															P_P_Ctrl_Signal(1),P_P_Ctrl_Signal(0),Pout_Ctrl_Signal,IF_ID_Inst_OutRange,PC_Selector, Branch_Prediction, Cond_Branch,
+															ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
+															ID_EX_ALUOp_Out,ID_EX_RegDst_Out,ID_EX_CCR_Write_Out,ID_EX_OP1_Out,ID_EX_OP2_Out,
+															ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_Opcode_Out,ID_EX_DST_10_8_Out,ID_EX_Rdata2_Prop_Out,ID_EX_MemWrite_Out,
+															ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,ID_EX_PS_W_EN_Out,ID_EX_PC_Out,ID_EX_Rdst_Val_OUT,
+															ID_EX_Push_Pop_Out,ID_EX_SP_Enable_Out,ID_EX_Pout_Out,ID_EX_Inst_OutRange,
+															ID_EX_PC_Selector_OUT , ID_EX_Prediction_OUT , ID_EX_Cond_Branch_OUT);
 
-	ALU_CTRL	: ALU_Controller port map(ID_EX_Opcode_Out,ID_EX_ALUOp_Out,ALU_Sel_Bits);
+ALU_CTRL			: ALU_Controller port map				(ID_EX_Opcode_Out,ID_EX_ALUOp_Out,ALU_Sel_Bits);
 
-	FU		: Forwarding_Unit port map(ID_EX_DST_10_8_Out,ID_EX_DST_7_5_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
-						EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
-						MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,MEM_WB_MemToReg_Out,FSrc1,FSrc2);
+FU					: Forwarding_Unit port map				(ID_EX_DST_10_8_Out,ID_EX_DST_7_5_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
+															EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,
+															MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,MEM_WB_MemToReg_Out,FSrc1,FSrc2);
 	
-	Operand1_MUX	: MUX_8X1_Generic port map(ID_EX_OP1_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,MEM_WB_Res1_Out,MEM_WB_Res2_Out,
-						MEM_WB_MeM_Out_Out,dummy_32bits,dummy_32bits,FSrc1,Operand1);
+Operand1_MUX		: MUX_8X1_Generic port map				(ID_EX_OP1_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,MEM_WB_Res1_Out,MEM_WB_Res2_Out,
+															MEM_WB_MeM_Out_Out,dummy_32bits,dummy_32bits,FSrc1,Operand1);
 
-	Operand2_MUX	: MUX_8X1_Generic port map(ID_EX_OP2_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,MEM_WB_Res1_Out,MEM_WB_Res2_Out,
-						MEM_WB_MeM_Out_Out,dummy_32bits,dummy_32bits,FSrc2,Operand2);
+Operand2_MUX		: MUX_8X1_Generic port map				(ID_EX_OP2_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,MEM_WB_Res1_Out,MEM_WB_Res2_Out,
+															MEM_WB_MeM_Out_Out,dummy_32bits,dummy_32bits,FSrc2,Operand2);
 
-	DST_MUX		: MUX_2X1_Generic generic map(3) port map(ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_RegDst_Out,RegDst_MUX_Out);
+DST_MUX				: MUX_2X1_Generic generic map(3) port map(ID_EX_DST_7_5_Out,ID_EX_DST_4_2_Out,ID_EX_RegDst_Out,RegDst_MUX_Out);
 
-	A_L_U		: ALU port map(ALU_Sel_Bits(0),ALU_Sel_Bits(4 downto 1),Operand1,Operand2,ALU_Res1,ALU_Res2,ALU_Cout,ALU_Flags_Out);
+A_L_U				: ALU port map							(ALU_Sel_Bits(0),ALU_Sel_Bits(4 downto 1),Operand1,Operand2,ALU_Res1,ALU_Res2,ALU_Cout,ALU_Flags_Out);
 
 	AUX_ZERO_Flag_Reset <=  ALU_Flags_Out(0) and (not Zero_Flag_Reset);
 	AUX_Enable_Flag <= ID_EX_CCR_Write_Out(0) or Zero_Flag_Reset;
 
-	ZF_Flag_Buffer	: my_DFF_reset0 port map(AUX_ZERO_Flag_Reset,clk,reset,AUX_Enable_Flag,CCR(0));
+ZF_Flag_Buffer		: my_DFF_reset0 port map				(AUX_ZERO_Flag_Reset,clk,reset,AUX_Enable_Flag,CCR(0));
 
-	NF_Flag_Buffer	: my_DFF_reset0 port map(ALU_Flags_Out(1),clk,reset,ID_EX_CCR_Write_Out(1),CCR(1));
+NF_Flag_Buffer		: my_DFF_reset0 port map				(ALU_Flags_Out(1),clk,reset,ID_EX_CCR_Write_Out(1),CCR(1));
 
-	CF_Flag_Buffer	: my_DFF_reset0 port map(ALU_Flags_Out(2),clk,reset,ID_EX_CCR_Write_Out(2),CCR(2));
+CF_Flag_Buffer		: my_DFF_reset0 port map				(ALU_Flags_Out(2),clk,reset,ID_EX_CCR_Write_Out(2),CCR(2));
 
-	OVF_Flag_Buffer	: my_DFF_reset0 port map(ALU_Flags_Out(3),clk,reset,ID_EX_CCR_Write_Out(3),CCR(3));
+OVF_Flag_Buffer		: my_DFF_reset0 port map				(ALU_Flags_Out(3),clk,reset,ID_EX_CCR_Write_Out(3),CCR(3));
 
-	EX_MEM		: EX_MEM_Pipe_Reg port map(clk,reset,EX_MEM_Flush,ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,ID_EX_Rdata2_Prop_Out,
-						ALU_Res1,ALU_Res2,RegDst_MUX_Out,ID_EX_DST_10_8_Out,ID_EX_MemWrite_Out,ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,
-						ID_EX_PS_W_EN_Out,ID_EX_Push_Pop_Out,ID_EX_SP_Enable_Out,ID_EX_Pout_Out,ID_EX_Inst_OutRange,CCR(3),ID_EX_PC_Selector_OUT,
-						EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
-						EX_MEM_Rdata2_Prop_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,
-						EX_MEM_MemWrite_Out,EX_MEM_MemRead_Out,EX_MEM_Protect_Free_Out,EX_MEM_PS_W_EN_Out,EX_MEM_Push_Pop_Out,
-						EX_MEM_SP_Enable_Out,EX_MEM_Pout_Out,EX_MEM_Inst_OutRange,EX_MEM_OVFL,EX_MEM_PC_Selector_OUT);
+EX_MEM				: EX_MEM_Pipe_Reg port map				(clk,reset,EX_MEM_Flush,ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,
+															ID_EX_RegWrite2_Out,ID_EX_Rdata2_Prop_Out,
+															ALU_Res1,ALU_Res2,RegDst_MUX_Out,ID_EX_DST_10_8_Out,ID_EX_MemWrite_Out,ID_EX_MemRead_Out,ID_EX_Protect_Free_Out,
+															ID_EX_PS_W_EN_Out,ID_EX_Push_Pop_Out,ID_EX_SP_Enable_Out,ID_EX_Pout_Out,ID_EX_Inst_OutRange,CCR(3),ID_EX_PC_Selector_OUT,
+															EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
+															EX_MEM_Rdata2_Prop_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,
+															EX_MEM_MemWrite_Out,EX_MEM_MemRead_Out,EX_MEM_Protect_Free_Out,EX_MEM_PS_W_EN_Out,EX_MEM_Push_Pop_Out,
+															EX_MEM_SP_Enable_Out,EX_MEM_Pout_Out,EX_MEM_Inst_OutRange,EX_MEM_OVFL,EX_MEM_PC_Selector_OUT);
 
-	SP 			: SP_Circuit port map(reset,clk,EX_MEM_SP_Enable_Out,EX_MEM_Push_Pop_Out,Stack_Pointer);
+SP 					: SP_Circuit port map					(reset,clk,EX_MEM_SP_Enable_Out,EX_MEM_Push_Pop_Out,Stack_Pointer);
 
-	PSR			: ProtectStatusRegister port map(RST=>reset, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>ALU_Res1, 
-												Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected);
+PSR					: ProtectStatusRegister port map		(RST=>reset, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>ALU_Res1, 
+															Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected);
 
-	MemWrite_Final <= not(Prot_Reg_isProtected) AND EX_MEM_MemWrite_Out;
+MemWrite_Final <= not(Prot_Reg_isProtected) AND EX_MEM_MemWrite_Out;
 
-	Data_Mem	: Data_Memory port map(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_Final,
-										Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>EX_MEM_MemRead_Out,Mem_Out=>Memory_Out,Mem_outRange=>Memory_Out_Range);
+Data_Mem			: Data_Memory port map					(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_Final,
+															Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>EX_MEM_MemRead_Out,Mem_Out=>Memory_Out,Mem_outRange=>Memory_Out_Range);
 
-	MEM_WB		: MEM_WB_Pipe_Reg port map(clk,reset,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
-						dummy_MeM_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,EX_MEM_Pout_Out,EX_MEM_Inst_OutRange,EX_MEM_OVFL,Prot_Reg_isProtected,Memory_Out_Range,
-						MEM_WB_MemToReg_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,MEM_WB_MeM_Out_Out,
-						MEM_WB_Res1_Out,MEM_WB_Res2_Out,MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,MEM_WB_Pout_Out,MEM_WB_Inst_OutRange,MEM_WB_OVFL,MEM_WB_isProtected,MEM_WB_Data_outRange);
+MEM_WB				: MEM_WB_Pipe_Reg port map				(clk,reset,EX_MEM_MemToReg_Out,EX_MEM_RegWrite1_Out,EX_MEM_RegWrite2_Out,
+															dummy_MeM_Out,EX_MEM_Res1_Out,EX_MEM_Res2_Out,EX_MEM_RegDst_Out,EX_MEM_DST_10_8_Out,EX_MEM_Pout_Out,EX_MEM_Inst_OutRange,EX_MEM_OVFL,Prot_Reg_isProtected,Memory_Out_Range,
+															MEM_WB_MemToReg_Out,MEM_WB_RegWrite1_Out,MEM_WB_RegWrite2_Out,MEM_WB_MeM_Out_Out,
+															MEM_WB_Res1_Out,MEM_WB_Res2_Out,MEM_WB_RegDst_Out,MEM_WB_DST_10_8_Out,MEM_WB_Pout_Out,MEM_WB_Inst_OutRange,MEM_WB_OVFL,MEM_WB_isProtected,MEM_WB_Data_outRange);
 
-	MeMToReg_MUX	: MUX_2X1_Generic port map(MEM_WB_Res1_Out,MEM_WB_MeM_Out_Out,MEM_WB_MemToReg_Out,WB_Data_1);
+MeMToReg_MUX		: MUX_2X1_Generic port map				(MEM_WB_Res1_Out,MEM_WB_MeM_Out_Out,MEM_WB_MemToReg_Out,WB_Data_1);
 
-	OUT_MUX		: MUX_2X1_Generic port map(x"00000000",MEM_WB_Res1_Out,MEM_WB_Pout_Out,OUTPORT);
+	OUT_MUX			: MUX_2X1_Generic port map				(x"00000000",MEM_WB_Res1_Out,MEM_WB_Pout_Out,OUTPORT);
 
 	Exception_out <= CCR(3) or Prot_Reg_isProtected;
 
