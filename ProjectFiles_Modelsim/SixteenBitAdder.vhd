@@ -43,7 +43,7 @@ Begin
 END GENERATE;
 	
 
-    ovf <= temp (n) xor temp (n-1);
+    ovf <= temp (SELECT_ADDER_Numbers) xor temp (SELECT_ADDER_Numbers-1);
 
     cout<=temp(SELECT_ADDER_Numbers);
 
