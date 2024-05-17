@@ -45,10 +45,10 @@ begin
 
 	EX <= "0000" WHEN IsInstIn = '0'
 	ELSE  "0000" WHEN opcode = "00000" -- NOP
-	ELSE  "1000" WHEN opcode = "00001" -- NOT
-	ELSE  "1000" WHEN opcode = "00010" -- NEG
-	ELSE  "1000" WHEN opcode = "00011" -- INC
-	ELSE  "1000" WHEN opcode = "00100" -- DEC
+	ELSE  "1100" WHEN opcode = "00001" -- NOT
+	ELSE  "1100" WHEN opcode = "00010" -- NEG
+	ELSE  "1100" WHEN opcode = "00011" -- INC
+	ELSE  "1100" WHEN opcode = "00100" -- DEC
 	ELSE  "1000" WHEN opcode = "00101" -- OUT
 	ELSE  "1010" WHEN opcode = "00110" -- IN
 	ELSE  "1100" WHEN opcode = "00111" -- MOV

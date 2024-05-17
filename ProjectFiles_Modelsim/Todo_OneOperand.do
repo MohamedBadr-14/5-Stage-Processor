@@ -16,16 +16,16 @@ add wave -position end  sim:/pipeline_integration/MEM_WB_RegWrite1_Out
 add wave -position end  sim:/pipeline_integration/CCR
 
 mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(0)
-mem load -filltype value -filldata 0000100100100000 -fillradix binary /pipeline_integration/IC/inst_array(1)
-mem load -filltype value -filldata 0001100100100000 -fillradix binary /pipeline_integration/IC/inst_array(2)
+mem load -filltype value -filldata 0000100100000100 -fillradix binary /pipeline_integration/IC/inst_array(1)
+mem load -filltype value -filldata 0001100100000100 -fillradix binary /pipeline_integration/IC/inst_array(2)
 mem load -filltype value -filldata 0011000000100000 -fillradix binary /pipeline_integration/IC/inst_array(3)
 mem load -filltype value -filldata 0011000001000000 -fillradix binary /pipeline_integration/IC/inst_array(4)
-mem load -filltype value -filldata 0000101001000000 -fillradix binary /pipeline_integration/IC/inst_array(5)
-mem load -filltype value -filldata 0001100100100000 -fillradix binary /pipeline_integration/IC/inst_array(6)	
+mem load -filltype value -filldata 0000101000001000 -fillradix binary /pipeline_integration/IC/inst_array(5)
+mem load -filltype value -filldata 0001100100000100 -fillradix binary /pipeline_integration/IC/inst_array(6)	
 mem load -filltype value -filldata 0010100100000000 -fillradix binary /pipeline_integration/IC/inst_array(7)	
 mem load -filltype value -filldata 0010101000000000 -fillradix binary /pipeline_integration/IC/inst_array(8)	
-mem load -filltype value -filldata 0010001001000000 -fillradix binary /pipeline_integration/IC/inst_array(9)
-mem load -filltype value -filldata 0001001001000000 -fillradix binary /pipeline_integration/IC/inst_array(10)
+mem load -filltype value -filldata 0010001000001000 -fillradix binary /pipeline_integration/IC/inst_array(9)
+mem load -filltype value -filldata 0001001000001000 -fillradix binary /pipeline_integration/IC/inst_array(10)
 mem load -filltype value -filldata 0010101000000000 -fillradix binary /pipeline_integration/IC/inst_array(11)
 
 
