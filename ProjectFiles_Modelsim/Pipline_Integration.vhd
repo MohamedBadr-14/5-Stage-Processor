@@ -712,7 +712,7 @@ Stack_Pointer_plus_2 <= std_logic_vector(to_unsigned((to_integer(unsigned(Stack_
 Memory_Address_MUX	: MUX_4X1_Generic port map				(Stack_Pointer,Stack_Pointer_plus_2,EX_MEM_Res2_Out,x"00000000",EX_MEM_MeM_In_Adrs_Out,
 															Memory_Address);
 
-Data_Mem			: Data_Memory port map					(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_Final,
+Data_Mem			: Data_Memory port map					(Rst=>reset,Clk=>clk,Mem_Write=>EX_MEM_MemWrite_Out,
 															Address=>Memory_Address,Data=>Memory_Data,Mem_Read=>EX_MEM_MemRead_Out,Push_Pop=>EX_MEM_Push_Pop_Out,
 															SP_Enable=>EX_MEM_SP_Enable_Out,
 															Mem_Out=>Memory_Out,Mem_outRange=>Memory_Out_Range);
