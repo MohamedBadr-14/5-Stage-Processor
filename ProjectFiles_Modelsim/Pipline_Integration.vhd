@@ -652,7 +652,7 @@ OP2_MUX				: MUX_2X1_Generic port map				(Rdata2,IC_Inst_Extended,EX_Ctrl_Signal
 ID_EX				: ID_EX_Pipe_Reg port map				(clk,reset,ID_EX_Flush,WB_Ctrl_Signal(0),WB_Ctrl_Signal(2),WB_Ctrl_Signal(1),
 															EX_Ctrl_Signal(3),EX_Ctrl_Signal(2),CCR_Write_Ctrl_Signal,
 															OP1,OP2,IF_ID_Inst_Out(7 downto 5),IF_ID_Inst_Out(4 downto 2),IF_ID_Inst_Out(15 downto 11),
-															IF_ID_Inst_Out(10 downto 8),Rdata1,M_Ctrl_Signal(3),M_Ctrl_Signal(2),M_Ctrl_Signal(1),M_Ctrl_Signal(0),IF_ID_PC_Out,Rdst_Val,
+															IF_ID_Inst_Out(10 downto 8),Rdata2,M_Ctrl_Signal(3),M_Ctrl_Signal(2),M_Ctrl_Signal(1),M_Ctrl_Signal(0),IF_ID_PC_Out,Rdst_Val,
 															P_P_Ctrl_Signal(1),P_P_Ctrl_Signal(0),Pout_Ctrl_Signal,IF_ID_Inst_OutRange,PC_Selector, Branch_Prediction, Cond_Branch,
 															M_DataMeM_Ctrl_Signal(3 downto 2),M_DataMeM_Ctrl_Signal(1 downto 0),
 															ID_EX_MemToReg_Out,ID_EX_RegWrite1_Out,ID_EX_RegWrite2_Out,
@@ -704,7 +704,7 @@ EX_MEM				: EX_MEM_Pipe_Reg port map				(clk,reset,EX_MEM_Flush,ID_EX_MemToReg_O
 
 SP 					: SP_Circuit port map					(reset,clk,EX_MEM_SP_Enable_Out,EX_MEM_Push_Pop_Out,Stack_Pointer);
 
-Memory_Data_MUX		: MUX_4X1_Generic port map				(ID_EX_Rdata2_Prop_Out,EX_MEM_Res1_Out,dummy_Added_PC,x"00000000",
+Memory_Data_MUX		: MUX_4X1_Generic port map				(EX_MEM_Rdata2_Prop_Out,EX_MEM_Res1_Out,dummy_Added_PC,x"00000000",
 															EX_MEM_MeM_Data_Out,Memory_Data);
 
 Stack_Pointer_plus_2 <= std_logic_vector(to_unsigned((to_integer(unsigned(Stack_Pointer)) + 2),32));
@@ -717,7 +717,7 @@ Data_Mem			: Data_Memory port map					(Rst=>reset,Clk=>clk,Mem_Write=>EX_MEM_Mem
 															SP_Enable=>EX_MEM_SP_Enable_Out,
 															Mem_Out=>Memory_Out,Mem_outRange=>Memory_Out_Range);
 
-PSR					: ProtectStatusRegister port map		(RST=>reset, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>ALU_Res1, 
+PSR					: ProtectStatusRegister port map		(RST=>reset, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>Memory_Address, 
 															Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected);
 
 MemWrite_Final <= not(Prot_Reg_isProtected) AND EX_MEM_MemWrite_Out;
