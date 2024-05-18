@@ -6,6 +6,7 @@ entity EX_MEM_Pipe_Reg is
 
 	port(
 		clk,reset				: in std_logic;
+		enable					: in std_logic;
 		Flush					: in std_logic;
 		IN_WB_MemToReg			: in std_logic;
 		IN_WB_RegWrite1			: in std_logic;
@@ -27,6 +28,10 @@ entity EX_MEM_Pipe_Reg is
 		IN_PC_Selector			: in std_logic;
 		IN_MeM_In_Adrs			: in std_logic_vector(1 downto 0);
 		IN_MeM_Data				: in std_logic_vector(1 downto 0);
+		IN_PC		 			:in std_logic_vector(31 downto 0);
+		IN_PC_PLUS_ONE 			:in std_logic_vector(31 downto 0);
+		IN_CCR					:in std_logic_vector(3 downto 0);
+		IN_Interrupt			: in std_logic;
 
 		OUT_WB_MemToReg			: out std_logic;
 		OUT_WB_RegWrite1		: out std_logic;
@@ -47,7 +52,11 @@ entity EX_MEM_Pipe_Reg is
 		OUT_OVFL				: out std_logic;
 		OUT_PC_Selector			: out std_logic;
 		OUT_MeM_In_Adrs			: out std_logic_vector(1 downto 0);
-		OUT_MeM_Data			: out std_logic_vector(1 downto 0)
+		OUT_MeM_Data			: out std_logic_vector(1 downto 0);
+		OUT_PC			 		: out std_logic_vector(31 downto 0);
+		OUT_PC_PLUS_ONE 		: out std_logic_vector(31 downto 0);
+		OUT_CCR					:OUT std_logic_vector(3 downto 0);
+		OUT_Interrupt			: out std_logic
 	);
 
 end entity;
@@ -81,8 +90,12 @@ begin
 			OUT_PC_Selector <= '0';
 			OUT_MeM_In_Adrs <= "00";
 			OUT_MeM_Data <= "00";
+			OUT_PC_PLUS_ONE <= (others => '0');
+			OUT_PC <= (others => '0');
+			OUT_Interrupt <= '0';
+			OUT_CCR <= "0000";
 			
-		elsif rising_edge(clk) then
+		elsif rising_edge(clk) and enable = '1' then
 			OUT_WB_MemToReg <= IN_WB_MemToReg;
 			OUT_WB_RegWrite1 <= IN_WB_RegWrite1;
 			OUT_WB_RegWrite2 <= IN_WB_RegWrite2;
@@ -103,6 +116,10 @@ begin
 			OUT_PC_Selector <= IN_PC_Selector;
 			OUT_MeM_In_Adrs <= IN_MeM_In_Adrs;
 			OUT_MeM_Data <= IN_MeM_Data;
+			OUT_PC <= IN_PC;
+			OUT_PC_PLUS_ONE <= IN_PC_PLUS_ONE;
+			OUT_Interrupt <= IN_Interrupt;
+			OUT_CCR <= IN_CCR;
 		end if;
 
 	end process;

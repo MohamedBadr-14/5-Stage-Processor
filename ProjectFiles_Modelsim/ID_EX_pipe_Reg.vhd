@@ -6,6 +6,7 @@ entity ID_EX_Pipe_Reg is
 
 	port(
 		clk,reset				: in std_logic;
+		enable					: in std_logic;
 		Flush					: in std_logic;
 		IN_WB_MemToReg			: in std_logic;
 		IN_WB_RegWrite1			: in std_logic;
@@ -35,6 +36,8 @@ entity ID_EX_Pipe_Reg is
 		IN_Cond_Branch_flag 	: in std_logic;
 		IN_MeM_In_Adrs			: in std_logic_vector(1 downto 0);
 		IN_MeM_Data				: in std_logic_vector(1 downto 0);
+		IN_PC_Plus_One			: in std_logic_vector(31 downto 0);
+		IN_Interrupt			: in std_logic;
 
 		OUT_WB_MemToReg			: out std_logic;
 		OUT_WB_RegWrite1		: out std_logic;
@@ -63,7 +66,9 @@ entity ID_EX_Pipe_Reg is
 		OUT_Prediction			: out std_logic;
 		OUT_Cond_Branch_flag 	: out std_logic;
 		OUT_MeM_In_Adrs			: out std_logic_vector(1 downto 0);
-		OUT_MeM_Data			: out std_logic_vector(1 downto 0)
+		OUT_MeM_Data			: out std_logic_vector(1 downto 0);
+		OUT_PC_Plus_One			: out std_logic_vector(31 downto 0);
+		OUT_Interrupt 			: out std_logic
 	);
 
 end entity;
@@ -105,8 +110,10 @@ begin
 			OUT_Cond_Branch_flag <= '0';
 			OUT_MeM_In_Adrs <= "00";
 			OUT_MeM_Data <= "00";
+			OUT_PC_Plus_One <= (others => '0');
+			OUT_Interrupt <= '0';
 
-		elsif rising_edge(clk) then
+		elsif rising_edge(clk) and enable = '1' then
 			OUT_WB_MemToReg <= IN_WB_MemToReg;		
 			OUT_WB_RegWrite1 <=IN_WB_RegWrite1;	
 			OUT_WB_RegWrite2 <= IN_WB_RegWrite2;		
@@ -135,6 +142,9 @@ begin
 			OUT_Cond_Branch_flag <= IN_Cond_Branch_flag;
 			OUT_MeM_In_Adrs <= IN_MeM_In_Adrs;
 			OUT_MeM_Data <= IN_MeM_Data;
+			OUT_PC_Plus_One <= IN_PC_Plus_One;
+			OUT_Interrupt <= IN_Interrupt;
+
 		end if;
 
 	end process;

@@ -9,6 +9,8 @@ entity Program_Counter is
 		enable		: in std_logic;
 		reset		: in std_logic;
 		clk		: in std_logic;
+		MEM_OF_0 : in std_logic_vector(15 downto 0) ;
+	    MEM_OF_1 : in std_logic_vector(15 downto 0) ;
 		PC		: out std_logic_vector(31 downto 0);
 		PC_Plus_One : out std_logic_vector(31 downto 0)
 	);
@@ -25,7 +27,7 @@ begin
 	
 	begin
 		if reset = '1' then
-			count_var := 0;
+			count_var := to_integer(unsigned((MEM_OF_1 & MEM_OF_0)));
 		elsif rising_edge(clk) then
 			if enable = '1' then
 				count_var := to_integer(unsigned(PC_Prev_Val)) + 1;

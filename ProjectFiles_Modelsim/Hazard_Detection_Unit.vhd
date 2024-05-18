@@ -5,6 +5,10 @@ USE IEEE.numeric_std.all;
 entity Hazard_Detection_Unit is
 
 	port(
+        Mem_To_Reg_EX : in std_logic;
+        Rdst : in std_logic_vector(2 downto 0);
+        EX_Rdst1 : in std_logic_vector(2 downto 0);
+        EX_Rdst2 : in std_logic_vector(2 downto 0);
         Cond_Branch : in std_logic;
         unCond_Branch : in std_logic;
         PC_Selector_From_Mem : in std_logic;
@@ -20,7 +24,8 @@ entity Hazard_Detection_Unit is
         ID_EX_Flush : out std_logic;
         EX_MEM_Flush : out std_logic;
         Enable_PC     : out std_logic;
-        Zero_Flag_Reset : out std_logic
+        Zero_Flag_Reset : out std_logic;
+        Enable_Pipline : out std_logic
     );
 
 end entity;
@@ -45,6 +50,9 @@ begin
     OUT_PC_Selector_From_Mem <= PC_Selector_From_Mem;
     
     IF_ID_Flush  <= unCond_or_Prediction or Should_Branch or Should_Not_Branch or PC_Selector_From_Mem;
+
+    Enable_Pipline <= '1' when not (Mem_To_Reg_EX = '1' and (Rdst = EX_Rdst1 or Rdst = EX_Rdst2) )
+    else '0';
     
     Enable_PC  <= not (unCond_or_Prediction or Should_Branch or Should_Not_Branch or PC_Selector_From_Mem);
 

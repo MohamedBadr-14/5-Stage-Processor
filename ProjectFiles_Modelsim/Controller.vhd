@@ -7,6 +7,7 @@ entity Controller is
 	port(
         opcode 			: IN std_logic_vector(4 DOWNTO 0);
 		IsInstIn		: IN std_logic;
+		Interrupt 		: in std_logic;
 		CCR_Write		: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : OVF / bit2: CF / bit1 : NF / bit0 : ZF
 		EX 				: OUT std_logic_vector(3 DOWNTO 0); -- bit3 : ALUOp / bit2 : RegDst / bit1 : ALUSrc1 / bit0 : ALUSrc2
 		WB 				: OUT std_logic_vector(2 DOWNTO 0); -- bit2 : RegWrite1 / bit1 : RegWrite2 / bit0 : MemToReg
@@ -37,7 +38,7 @@ begin
 	Cond_Branch <= '1' When opcode = "11000"
 	else '0';
 	
-	unCond_Branch <= '1' when (opcode = "11001" or opcode = "11010" or opcode = "11011" or opcode = "11100") 
+	unCond_Branch <= '1' when (opcode = "11001" or opcode = "11010" ) --jmp and call 
 	else '0';
 
 	PC_Selector <= '1' when (opcode = "11011" or opcode = "11100")
@@ -125,6 +126,10 @@ begin
 	ELSE "1000" WHEN opcode = "10101" -- STD
 	ELSE "0011" WHEN opcode = "10110" -- Protect
 	ELSE "1001" WHEN opcode = "10111" -- Free
+	ELSE "0100" WHEN opcode = "11011" -- RET
+	ELSE "0100" WHEN opcode = "11100" -- RTI
+	ELSE "1000" WHEN opcode = "11010" -- CALL
+	ELSE "1000" WHEN Interrupt = '1'
 	ELSE "0000";
 
 	--bit3 and bit2 : MeM_In_Adrs / bit1 and bit0 : MeM_Data
@@ -134,6 +139,10 @@ begin
 	ELSE 		 "1000" WHEN opcode = "10101" -- STD
 	ELSE 		 "1111" WHEN opcode = "10110" -- Protect
 	ELSE 		 "1111" WHEN opcode = "10111" -- Free
+	ELSE 		 "0010" WHEN opcode = "11010" -- CALL
+	ELSE 		 "0010" WHEN opcode = "11011" -- RET
+	ELSE 		 "0010" WHEN opcode = "11100" -- RTI
+	ELSE 		 "0010" WHEN Interrupt = '1'
 	ELSE 		 "1000";
 
 
@@ -143,6 +152,7 @@ begin
 	ELSE 			 "01" WHEN opcode = "11010" -- Call
 	ELSE 			 "11" WHEN opcode = "11011" -- RET
 	ELSE       		 "11" WHEN opcode = "11100" -- RTI
+	ELSE       		 "01" WHEN Interrupt = '1'
 	ELSE "00";
    
 end Arch1;
