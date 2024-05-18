@@ -30,7 +30,7 @@ begin
 	IsInstOut<= '0' WHEN opcode = "01010" -- ADDI
 	ELSE 		'0' WHEN opcode = "01100" -- SUBI
 	ELSE        '0' WHEN opcode = "10001" -- LDM
-	ELSE        '0' WHEN opcode = "10100" -- LDM
+	ELSE        '0' WHEN opcode = "10100" -- LDD
 	ELSE        '0' WHEN opcode = "10101" -- STD
 	ELSE '1';
 
@@ -118,7 +118,7 @@ begin
 	ELSE         "0011" WHEN opcode = "10000" -- CMP
 	ELSE	     "0000";
 
-
+	-- bit3 : MemWrite / bit2 : MemRead / bit1 : Protect_Free / bit0 : PS_W_EN
 	M <= "1000" WHEN opcode = "10010" -- Push
 	ELSE "0100" WHEN opcode = "10011" -- Pop
 	ELSE "0100" WHEN opcode = "10100" -- LDD
