@@ -10,6 +10,7 @@ add wave -position end  /pipeline_integration/Data_Mem/data_array
 add wave -position end  /pipeline_integration/PSR/PF_array
 add wave -position end  /pipeline_integration/PSR/Protect_Free
 add wave -position end  /pipeline_integration/PSR/isProtected
+add wave -position end  sim:/pipeline_integration/Exception_out
 add wave -position end  sim:/pipeline_integration/EX_MEM_MemWrite_Out
 add wave -position end  sim:/pipeline_integration/Prot_Reg_isProtected
 add wave -position end  sim:/pipeline_integration/MemWrite_Final
