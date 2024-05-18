@@ -367,7 +367,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			OUT_PC			 		: out std_logic_vector(31 downto 0);
 			OUT_PC_PLUS_ONE 		: out std_logic_vector(31 downto 0);
 			OUT_CCR					:OUT std_logic_vector(3 downto 0);
-			OUT_Interrupt			: in std_logic
+			OUT_Interrupt			: out std_logic
 		);
 	
 	end component;

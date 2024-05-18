@@ -1,20 +1,15 @@
 vsim work.pipeline_integration
+add wave -position end  /pipeline_integration/Reg_File/Registers
+add wave -position end  sim:/pipeline_integration/PC_Address
+add wave -position end  sim:/pipeline_integration/IC_Instruction
+add wave -position end  sim:/pipeline_integration/Stack_Pointer
+add wave -position end  sim:/pipeline_integration/CCR
 add wave -position end  sim:/pipeline_integration/clk
 add wave -position end  sim:/pipeline_integration/reset
+add wave -position end  sim:/pipeline_integration/Interrupt
 add wave -position end  sim:/pipeline_integration/INPORT
 add wave -position end  sim:/pipeline_integration/OUTPORT
 add wave -position end  sim:/pipeline_integration/Exception_out
-add wave -position end  sim:/pipeline_integration/PC_Address
-add wave -position end  sim:/pipeline_integration/IC_Instruction
-add wave -position end  /pipeline_integration/Reg_File/Registers
-add wave -position end  sim:/pipeline_integration/Operand1
-add wave -position end  sim:/pipeline_integration/Operand2
-add wave -position end  sim:/pipeline_integration/ALU_Res1
-add wave -position end  sim:/pipeline_integration/ALU_Res2
-add wave -position end  sim:/pipeline_integration/MEM_WB_Res1_Out
-add wave -position end  sim:/pipeline_integration/MEM_WB_RegDst_Out
-add wave -position end  sim:/pipeline_integration/MEM_WB_RegWrite1_Out
-add wave -position end  sim:/pipeline_integration/CCR
 
 mem load -filltype value -filldata 0011000000100000 -fillradix binary /pipeline_integration/IC/inst_array(0)
 mem load -filltype value -filldata 0011000001000000 -fillradix binary /pipeline_integration/IC/inst_array(1)

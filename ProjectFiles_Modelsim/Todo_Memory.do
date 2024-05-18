@@ -1,19 +1,15 @@
 vsim work.pipeline_integration
+add wave -position end  /pipeline_integration/Reg_File/Registers
+add wave -position end  sim:/pipeline_integration/PC_Address
+add wave -position end  sim:/pipeline_integration/IC_Instruction
+add wave -position end  sim:/pipeline_integration/Stack_Pointer
+add wave -position end  sim:/pipeline_integration/CCR
 add wave -position end  sim:/pipeline_integration/clk
 add wave -position end  sim:/pipeline_integration/reset
+add wave -position end  sim:/pipeline_integration/Interrupt
 add wave -position end  sim:/pipeline_integration/INPORT
-add wave -position end  /pipeline_integration/Reg_File/Registers
-add wave -position end  sim:/pipeline_integration/Memory_Data
-add wave -position end  sim:/pipeline_integration/Memory_Address
-add wave -position end  sim:/pipeline_integration/Stack_Pointer
-add wave -position end  /pipeline_integration/Data_Mem/data_array
-add wave -position end  /pipeline_integration/PSR/PF_array
-add wave -position end  /pipeline_integration/PSR/Protect_Free
-add wave -position end  /pipeline_integration/PSR/isProtected
+add wave -position end  sim:/pipeline_integration/OUTPORT
 add wave -position end  sim:/pipeline_integration/Exception_out
-add wave -position end  sim:/pipeline_integration/EX_MEM_MemWrite_Out
-add wave -position end  sim:/pipeline_integration/Prot_Reg_isProtected
-add wave -position end  sim:/pipeline_integration/MemWrite_Final
 
 
 
