@@ -92,4 +92,69 @@ run
 
 force -freeze sim:/pipeline_integration/INPORT 00000000 0
 
+run
+run
+run
+run
+run
+run
+run
+
+force -freeze sim:/pipeline_integration/INPORT 00000010 0
+run
+
+run
+run
+run
+run
+run
+run
+run
+run
+run
+
+force -freeze sim:/pipeline_integration/INPORT 00000010 0
+run
+
+force -freeze sim:/pipeline_integration/INPORT 00000019 0
+run
+
+run
+run
+run
+run
+run
+run
+run
+
+force -freeze sim:/pipeline_integration/INPORT 00000211 0
+run
+
+run
+run
+run
+run
+run
+
+force -freeze sim:/pipeline_integration/INPORT 00000100 0
+run
+
+run
+run
+run
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
