@@ -27,9 +27,11 @@ Architecture Arch1 of Controller is
 begin
 	-- IsInstOut is an indicator that the next fetched Instruction is an immediate value
 	-- it takes a 1 clk cycle delay to be an input to the next decode stage where 0 CTRL signals is produced 
-	IsInstOut<= '0' WHEN opcode = "10001" -- LDM
-	ELSE 		'0' WHEN opcode = "01010" -- ADDI
+	IsInstOut<= '0' WHEN opcode = "01010" -- ADDI
 	ELSE 		'0' WHEN opcode = "01100" -- SUBI
+	ELSE        '0' WHEN opcode = "10001" -- LDM
+	ELSE        '0' WHEN opcode = "10100" -- LDM
+	ELSE        '0' WHEN opcode = "10101" -- STD
 	ELSE '1';
 
 	Cond_Branch <= '1' When opcode = "11000"
@@ -66,6 +68,8 @@ begin
 	ELSE  "1001" WHEN opcode = "10001" -- LDM
 	ELSE  "1000" WHEN opcode = "10010" -- PUSH
 	ELSE  "0000" WHEN opcode = "10011" -- POP
+	ELSE  "1001" WHEN opcode = "10100" -- LDD
+	ELSE  "1001" WHEN opcode = "10101" -- STD
 	ELSE  "0000";
 
 	-- bit2 : RegWrite1 / bit1 : RegWrite2 / bit0 : MemToReg
@@ -90,6 +94,8 @@ begin
 	ELSE  "100" WHEN opcode = "10001" -- LDM
 	ELSE  "000" WHEN opcode = "10010" -- PUSH
 	ELSE  "101" WHEN opcode = "10011" -- POP
+	ELSE  "101" WHEN opcode = "10100" -- LDD
+	ELSE  "000" WHEN opcode = "10101" -- STD
 	ELSE  "000";
 
 	--OVF CF NF ZF
