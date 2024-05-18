@@ -9,7 +9,8 @@ entity ProtectStatusRegister is
 		Write_enable	: in std_logic;
 		Res1	        : in std_logic_vector(31 downto 0);
 		Protect_Free	: in std_logic; -- 1: Protect, 0: Free
-		isProtected		: out std_logic
+		isProtected		: out std_logic;
+		ReadEnable		: in std_logic
 	);
 
 end entity;
@@ -36,7 +37,7 @@ begin
 		
 	end process;
 
-	isProtected <= PF_array(to_integer(unsigned(Res1)));
+	isProtected <= PF_array(to_integer(unsigned(Res1))) WHEN ReadEnable = '1' ELSE '0';
 
 end ProtectStatusRegister_arch;
 ----------------------------------------------------------------------------------------------------------------------------

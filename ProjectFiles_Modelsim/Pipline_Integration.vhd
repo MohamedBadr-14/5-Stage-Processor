@@ -442,7 +442,8 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 			Write_enable	: in std_logic;
 			Res1	        : in std_logic_vector(31 downto 0);
 			Protect_Free	: in std_logic; -- 1: Protect, 0: Free
-			isProtected		: out std_logic
+			isProtected		: out std_logic;
+			ReadEnable		: in std_logic
 		);
 	end component;
 
@@ -718,7 +719,7 @@ Data_Mem			: Data_Memory port map					(Rst=>reset,Clk=>clk,Mem_Write=>MemWrite_F
 															Mem_Out=>Memory_Out,Mem_outRange=>Memory_Out_Range);
 
 PSR					: ProtectStatusRegister port map		(RST=>reset, CLK=>clk, Write_enable=>EX_MEM_PS_W_EN_Out, Res1=>Memory_Address, 
-															Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected);
+															Protect_Free=>EX_MEM_Protect_Free_Out, isProtected=>Prot_Reg_isProtected, ReadEnable=>EX_MEM_MemWrite_Out);
 
 MemWrite_Final <= not(Prot_Reg_isProtected) AND EX_MEM_MemWrite_Out;
 
