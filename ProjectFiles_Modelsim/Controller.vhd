@@ -134,7 +134,7 @@ begin
 	ELSE 		 "1000" WHEN opcode = "10101" -- STD
 	ELSE 		 "1111" WHEN opcode = "10110" -- Protect
 	ELSE 		 "1111" WHEN opcode = "10111" -- Free
-	ELSE 		 "0000";
+	ELSE 		 "1000";
 
 
 	-- bit1 : Push/Pop / bit0 : SP_Enable

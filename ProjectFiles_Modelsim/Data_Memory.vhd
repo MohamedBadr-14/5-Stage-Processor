@@ -59,7 +59,8 @@ begin
                 else
                     Mem_outRange <= '0';
                     if SP_Enable = '0' then --LDD
-                        Mem_Out <= data_array(to_integer(unsigned(Address)) + 1) & data_array(to_integer(unsigned(Address)));
+                        --Mem_Out <= data_array(to_integer(unsigned(Address)) + 1) & data_array(to_integer(unsigned(Address)));
+                        Mem_Out <= x"0000" & data_array(to_integer(unsigned(Address)));
                     else
                         if Push_Pop = '1' then -- Pop
                             Mem_Out <= data_array(to_integer(unsigned(Address)) + 2) & data_array(to_integer(unsigned(Address)) + 1);

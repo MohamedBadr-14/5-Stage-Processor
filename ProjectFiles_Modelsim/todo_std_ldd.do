@@ -17,6 +17,7 @@ mem load -filltype value -filldata 0011010010000000 -fillradix binary /pipeline_
 mem load -filltype value -filldata 0011010110100000 -fillradix binary /pipeline_integration/IC/inst_array(4)
 mem load -filltype value -filldata 1010110101000000 -fillradix binary /pipeline_integration/IC/inst_array(5)
 mem load -filltype value -filldata 0000001000000000 -fillradix binary /pipeline_integration/IC/inst_array(6)
+
 mem load -filltype value -filldata 1010110100100000 -fillradix binary /pipeline_integration/IC/inst_array(7)
 mem load -filltype value -filldata 0000001000000001 -fillradix binary /pipeline_integration/IC/inst_array(8)
 mem load -filltype value -filldata 1010010101100000 -fillradix binary /pipeline_integration/IC/inst_array(9)
