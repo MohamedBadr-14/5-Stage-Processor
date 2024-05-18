@@ -704,12 +704,12 @@ EX_MEM				: EX_MEM_Pipe_Reg port map				(clk,reset,EX_MEM_Flush,ID_EX_MemToReg_O
 
 SP 					: SP_Circuit port map					(reset,clk,EX_MEM_SP_Enable_Out,EX_MEM_Push_Pop_Out,Stack_Pointer);
 
-Memory_Data_MUX		: MUX_4X1_Generic port map				(EX_MEM_Rdata2_Prop_Out,EX_MEM_Res1_Out,dummy_Added_PC,x"00000000",
+Memory_Data_MUX		: MUX_4X1_Generic port map				(ID_EX_Rdata2_Prop_Out,EX_MEM_Res1_Out,dummy_Added_PC,x"00000000",
 															EX_MEM_MeM_Data_Out,Memory_Data);
 
 Stack_Pointer_plus_2 <= std_logic_vector(to_unsigned((to_integer(unsigned(Stack_Pointer)) + 2),32));
 
-Memory_Address_MUX	: MUX_4X1_Generic port map				(Stack_Pointer,Stack_Pointer_plus_2,EX_MEM_Res2_Out,x"00000000",EX_MEM_MeM_In_Adrs_Out,
+Memory_Address_MUX	: MUX_4X1_Generic port map				(Stack_Pointer,Stack_Pointer_plus_2,EX_MEM_Res2_Out,EX_MEM_Res1_Out,EX_MEM_MeM_In_Adrs_Out,
 															Memory_Address);
 
 Data_Mem			: Data_Memory port map					(Rst=>reset,Clk=>clk,Mem_Write=>EX_MEM_MemWrite_Out,
