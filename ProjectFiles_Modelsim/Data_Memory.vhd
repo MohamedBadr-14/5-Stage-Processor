@@ -33,7 +33,7 @@ begin
 			data_array <= (others => (others => '0'));
 		elsif falling_edge(Clk) then
             if Mem_Write = '1' then
-                if to_integer(unsigned(Address)) < 0 or to_integer(unsigned(Address)) > 4095 then
+                if (to_integer(unsigned(Address)) < 0 or to_integer(unsigned(Address)) > 4095) or (SP_Enable = '0' and (to_integer(unsigned(Address)) + 1 > 4095)) or ((SP_Enable = '1' and (to_integer(unsigned(Address)) - 1 < 0))) then
                     Mem_outRange <= '1';
                 else
                     Mem_outRange <= '0';
@@ -54,7 +54,7 @@ begin
     begin
         if Rst = '0' then
             if Mem_Read = '1' then
-                if to_integer(unsigned(Address)) < 0 or to_integer(unsigned(Address)) > 4095 then
+                if (to_integer(unsigned(Address)) < 0 or to_integer(unsigned(Address)) > 4095) or (SP_Enable = '1' and (to_integer(unsigned(Address)) + 1 > 4095 or to_integer(unsigned(Address)) + 2 > 4095)) then
                     Mem_outRange <= '1';
                 else
                     Mem_outRange <= '0';
