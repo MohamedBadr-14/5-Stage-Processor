@@ -27,7 +27,8 @@ begin
 	
 	begin
 		if reset = '1' then
-			count_var := to_integer(unsigned((MEM_OF_1 & MEM_OF_0)));
+			--count_var := to_integer(unsigned((MEM_OF_1 & MEM_OF_0)));
+			count_var := 0;
 		elsif rising_edge(clk) then
 			if enable = '1' then
 				count_var := to_integer(unsigned(PC_Prev_Val)) + 1;

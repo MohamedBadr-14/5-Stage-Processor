@@ -10,6 +10,7 @@ add wave -position end  sim:/pipeline_integration/Interrupt
 add wave -position end  sim:/pipeline_integration/INPORT
 add wave -position end  sim:/pipeline_integration/OUTPORT
 add wave -position end  sim:/pipeline_integration/Exception_out
+add wave -position end  /pipeline_integration/Data_Mem/data_array
 
 
 
@@ -68,11 +69,36 @@ mem load -filltype value -filldata 1010101000100000 -fillradix binary /pipeline_
 mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(40)
 
 
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(41)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(42)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(43)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(44)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(45)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(46)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(47)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(48)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(49)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(50)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(51)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(52)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(53)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(54)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(55)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(56)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(57)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(58)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(59)
+mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(60)
+
+
+
+
 
 
 force -freeze sim:/pipeline_integration/clk 0 0, 1 {500 ps} -r {1 ns}
 force -freeze sim:/pipeline_integration/reset 1 0
 force -freeze sim:/pipeline_integration/INPORT 00000000 0
+force -freeze sim:/pipeline_integration/interrupt 0 0
 run
 
 force -freeze sim:/pipeline_integration/reset 0 0
