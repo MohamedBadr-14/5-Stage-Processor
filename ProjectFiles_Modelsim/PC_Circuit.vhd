@@ -31,7 +31,7 @@ architecture Behavioral of PC_Circuit is
 
 	end component;
 
-    signal Mux0_Output, Mux1_Output, Mux2_Output, Mux3_Output : std_logic_vector(31 downto 0);
+    signal Mux0_Output, Mux1_Output, Mux2_Output, Mux3_Output , temp : std_logic_vector(31 downto 0);
 begin
 
     Mux0 : MUX_2X1_Generic
@@ -69,4 +69,8 @@ begin
         sel => PC_Selector_Mem,
         out1  => Outp
     );
+
+
+
+
 end Behavioral;

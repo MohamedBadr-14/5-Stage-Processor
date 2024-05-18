@@ -6,7 +6,6 @@ entity Instruction_Memory is
 
 	port(	
 		ReadAddress	: in std_logic_vector(31 downto 0); --PC applied as an input.
-		reset		: in std_logic;
 		Read_Port	: out std_logic_vector(15 downto 0);
 		M_0,M_1,M_2,M_3		: out std_logic_vector(15 downto 0);
 		outRange	: out std_logic

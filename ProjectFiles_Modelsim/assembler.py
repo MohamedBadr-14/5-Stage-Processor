@@ -155,7 +155,7 @@ def main():
     for row in range(len(ListOfInstructions)):
         if '.org' in ListOfInstructions[row]:
 
-            currentIndex = int(ListOfInstructions[row].replace('.org', ''))
+            currentIndex = int(ListOfInstructions[row].replace('.org', ''), 16)
             print("Current Index")
             print(currentIndex)
         else:
@@ -171,6 +171,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-   

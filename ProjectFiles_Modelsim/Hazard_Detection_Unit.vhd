@@ -48,11 +48,15 @@ begin
     else '0';
     
     OUT_PC_Selector_From_Mem <= PC_Selector_From_Mem;
+
+    --PC_Val_For_Int <= Rdst_Val when (unCond_or_Prediction or Should_Branch)
+    --else Mem_Out when ()
     
     IF_ID_Flush  <= unCond_or_Prediction or Should_Branch or Should_Not_Branch or PC_Selector_From_Mem;
 
     Enable_Pipline <= '1' when not (Mem_To_Reg_EX = '1' and (Rdst = EX_Rdst1 or Rdst = EX_Rdst2) )
     else '0';
+
     
     Enable_PC  <= not (unCond_or_Prediction or Should_Branch or Should_Not_Branch or PC_Selector_From_Mem);
 

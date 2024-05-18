@@ -71,6 +71,18 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 
 	end component;
 
+	component Handle_int is
+		Port (
+			reset , interrupt : in std_logic;
+			PC_Val  : in  std_logic_vector(31 downto 0);
+			MEM_OF_0 : in std_logic_vector(15 downto 0) ;
+			MEM_OF_1 : in std_logic_vector(15 downto 0) ;
+			MEM_OF_2 : in std_logic_vector(15 downto 0) ;
+			MEM_OF_3 : in std_logic_vector(15 downto 0) ;
+			Final_PC  : out std_logic_vector(31 downto 0)
+		);
+	end component;
+
 	component IF_ID_Pipe_Reg is
 
 		port(
@@ -154,6 +166,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
         Zero_Flag_Reset : out std_logic;
         Enable_Pipline : out std_logic
     );
+
 
 	end component;
 
@@ -506,22 +519,22 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 
 	
 	signal PC_Address 				: std_logic_vector(31 downto 0);
+	signal MEM_OF_1 				: std_logic_vector(15 downto 0);
+	signal MEM_OF_0 				: std_logic_vector(15 downto 0);
+	signal MEM_OF_2 				: std_logic_vector(15 downto 0);
+	signal MEM_OF_3 				: std_logic_vector(15 downto 0);
 	signal PC_Plus_One 				: std_logic_vector(31 downto 0);
 	signal IC_Instruction			: std_logic_vector(15 downto 0);
 	signal IC_Inst_Extended			: std_logic_vector(31 downto 0);
 	signal IC_Inst_OutRange			: std_logic;
 
-	signal MEM_OF_1 				: std_logic_vector(15 downto 0);
-	signal MEM_OF_0 				: std_logic_vector(15 downto 0);
-	signal MEM_OF_2 				: std_logic_vector(15 downto 0);
-	signal MEM_OF_3 				: std_logic_vector(15 downto 0);
 
 	signal IF_ID_PC_Out				: std_logic_vector(31 downto 0);
+	signal IF_ID_PC_Plus_One_Out				: std_logic_vector(31 downto 0);
 	signal IF_ID_Inst_Out			: std_logic_vector(15 downto 0);
 	signal IF_ID_INPORT_OUT			: std_logic_vector(31 downto 0);
-	signal IF_ID_Inst_OutRange		: std_logic;
-	signal IF_ID_PC_Plus_One_Out	: std_logic_vector(31 downto 0);
 	signal IF_ID_INTERRUPT_OUT		: std_logic;
+	signal IF_ID_Inst_OutRange		: std_logic;
 	signal stall_IF_ID				: std_logic;
 
 	--controller signals
@@ -596,6 +609,7 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal ID_EX_Interrupt_Out		: std_logic;
 	signal stall_ID_EX			: std_logic;
 
+
 	signal ALU_Sel_Bits				: std_logic_vector(4 downto 0);
 	signal Operand1,Operand2		: std_logic_vector(31 downto 0);		
 	signal RegDst_MUX_Out			: std_logic_vector(2 downto 0);
@@ -625,9 +639,9 @@ Architecture Pipeline_Integration_arch of Pipeline_Integration is
 	signal EX_MEM_Inst_OutRange		: std_logic;
 	signal EX_MEM_OVFL				: std_logic;
 	signal EX_MEM_PC_Selector_OUT	: std_logic;
+	signal EX_MEM_Interrupt_OUT		: std_logic;
 	signal EX_MEM_MeM_In_Adrs_Out	: std_logic_vector(1 downto 0);
 	signal EX_MEM_MeM_Data_Out		: std_logic_vector(1 downto 0);
-	signal EX_MEM_Interrupt_OUT		: std_logic;
 	signal EX_MEM_PC_PLUS_ONE_Out		: std_logic_vector(31 downto 0);
 	signal EX_MEM_PC_Out			: std_logic_vector(31 downto 0);
 	signal EX_MEM_CCR_Out			: std_logic_vector(3 downto 0);
