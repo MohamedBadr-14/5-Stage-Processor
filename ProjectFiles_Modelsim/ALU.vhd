@@ -90,8 +90,8 @@ Flags(0) <= '1' WHEN F_AUX = "00000000000000000000000000000000"
 			else '0';
 
 F1 <= F_AUX;
-F2 <= 		B   WHEN  Sel_Aux = "00111";
-	ELSE  F_AUX WHEN  Sel_Aux = "00100";
+F2 <= 		B   WHEN  Sel_Aux = "00111"
+	ELSE  F_AUX WHEN  Sel_Aux = "00100"
 	ELSE	(others => '0');
 Cout <= Cout_AUX;
 

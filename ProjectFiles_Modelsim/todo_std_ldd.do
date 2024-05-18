@@ -1,21 +1,12 @@
 vsim work.pipeline_integration
-add wave -position end  sim:/pipeline_integration/Memory_Address
-add wave -position end  sim:/pipeline_integration/Memory_Out
 add wave -position end  sim:/pipeline_integration/clk
-add wave -position end  sim:/pipeline_integration/reset
-add wave -position end  sim:/pipeline_integration/PC_Address
-add wave -position end  sim:/pipeline_integration/IC_Instruction
 add wave -position end  /pipeline_integration/Reg_File/Registers
-add wave -position end  sim:/pipeline_integration/Operand1
-add wave -position end  sim:/pipeline_integration/Operand2
-add wave -position end  sim:/pipeline_integration/ALU_Res1
-add wave -position end  sim:/pipeline_integration/ALU_Res2
+add wave -position end  sim:/pipeline_integration/EX_MEM_MeM_In_Adrs_Out 
+add wave -position end  sim:/pipeline_integration/EX_MEM_MeM_Data_Out 
 add wave -position end  sim:/pipeline_integration/Memory_Data
 add wave -position end  sim:/pipeline_integration/Memory_Address
+add wave -position end  sim:/pipeline_integration/MemWrite_Final 
 add wave -position end  sim:/pipeline_integration/Stack_Pointer
-add wave -position end  sim:/pipeline_integration/EX_MEM_SP_Enable_Out
-add wave -position end  sim:/pipeline_integration/EX_MEM_Push_Pop_Out
-add wave -position end  sim:/pipeline_integration/Memory_Out_Range
 add wave -position end  /pipeline_integration/Data_Mem/data_array
 
 
