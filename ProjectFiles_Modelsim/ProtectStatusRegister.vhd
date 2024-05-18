@@ -22,12 +22,12 @@ Architecture ProtectStatusRegister_arch of ProtectStatusRegister is
 
 begin
 
-	process(CLK,RST,Write_enable)
+	process(CLK,RST,Write_enable,Protect_Free)
 	begin
 
 		if RST = '1' then
 			PF_array <= (others => '0');
-		elsif rising_edge(CLK) then
+		else
 			if Write_enable = '1' then
 				PF_array(to_integer(unsigned(Res1))) <= Protect_Free;
 			else
