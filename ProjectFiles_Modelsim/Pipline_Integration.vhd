@@ -733,7 +733,7 @@ MeMToReg_MUX		: MUX_2X1_Generic port map				(MEM_WB_Res1_Out,MEM_WB_MeM_Out_Out,
 
 OUT_MUX				: MUX_2X1_Generic port map				(x"00000000",MEM_WB_Res1_Out,MEM_WB_Pout_Out,OUTPORT);
 
-	Exception_out <= CCR(3) or Prot_Reg_isProtected;
+	Exception_out <= CCR(3) or (Prot_Reg_isProtected and EX_MEM_MemWrite_Out);
 
 	 
 end Pipeline_Integration_arch;

@@ -27,7 +27,7 @@ begin
 
 		if RST = '1' then
 			PF_array <= (others => '0');
-		elsif falling_edge(CLK) then
+		elsif rising_edge(CLK) then
 			if Write_enable = '1' then
 				PF_array(to_integer(unsigned(Res1))) <= Protect_Free;
 			else
