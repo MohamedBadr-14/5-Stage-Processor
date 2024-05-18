@@ -20,7 +20,7 @@ end entity;
 
 Architecture Data_Memory_Arch of Data_Memory is
 
-	type data_mem is array(2048 to 4095) of std_logic_vector(15 downto 0);
+	type data_mem is array(0 to 4095) of std_logic_vector(15 downto 0);
 	signal data_array	: data_mem;
 
 begin
@@ -33,7 +33,7 @@ begin
 			data_array <= (others => (others => '0'));
 		elsif falling_edge(Clk) then
             if Mem_Write = '1' then
-                if to_integer(unsigned(Address)) < 2048 or to_integer(unsigned(Address)) > 4095 then
+                if to_integer(unsigned(Address)) < 0 or to_integer(unsigned(Address)) > 4095 then
                     Mem_outRange <= '1';
                 else
                     Mem_outRange <= '0';
@@ -54,7 +54,7 @@ begin
     begin
         if Rst = '0' then
             if Mem_Read = '1' then
-                if to_integer(unsigned(Address)) < 2048 or to_integer(unsigned(Address)) > 4095 then
+                if to_integer(unsigned(Address)) < 0 or to_integer(unsigned(Address)) > 4095 then
                     Mem_outRange <= '1';
                 else
                     Mem_outRange <= '0';
