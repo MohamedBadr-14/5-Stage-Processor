@@ -1,14 +1,14 @@
 vsim work.pipeline_integration
+add wave -position end  sim:/pipeline_integration/clk
+add wave -position end  sim:/pipeline_integration/INPORT
+add wave -position end  sim:/pipeline_integration/OUTPORT
 add wave -position end  /pipeline_integration/Reg_File/Registers
-add wave -position end  sim:/pipeline_integration/PC_Address
+add wave -position end  sim:/pipeline_integration/PC_Val
 add wave -position end  sim:/pipeline_integration/IC_Instruction
 add wave -position end  sim:/pipeline_integration/Stack_Pointer
 add wave -position end  sim:/pipeline_integration/CCR
-add wave -position end  sim:/pipeline_integration/clk
 add wave -position end  sim:/pipeline_integration/reset
 add wave -position end  sim:/pipeline_integration/Interrupt
-add wave -position end  sim:/pipeline_integration/INPORT
-add wave -position end  sim:/pipeline_integration/OUTPORT
 add wave -position end  sim:/pipeline_integration/Exception_out
 add wave -position end  /pipeline_integration/Data_Mem/data_array
 
@@ -32,6 +32,7 @@ mem load -filltype value -filldata 0111101101100100 -fillradix binary /pipeline_
 mem load -filltype value -filldata 1000000101100000 -fillradix binary /pipeline_integration/IC/inst_array(17) 
 mem load -filltype value -filldata 0100110110111000 -fillradix binary /pipeline_integration/IC/inst_array(18) 
 
+# Extra NOPs
 mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(19)
 mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(20)
 mem load -filltype value -filldata 0000000000000000 -fillradix binary /pipeline_integration/IC/inst_array(21)
