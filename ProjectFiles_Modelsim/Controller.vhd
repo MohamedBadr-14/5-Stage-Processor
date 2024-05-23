@@ -100,7 +100,8 @@ begin
 	ELSE  "000";
 
 	--OVF CF NF ZF
-	CCR_Write <= "0000" WHEN opcode = "00000" -- NOP
+	CCR_Write <= "0000" WHEN IsInstIN = '0'
+	ELSE		 "0000" WHEN opcode = "00000" -- NOP
 	ELSE         "0011" WHEN opcode = "00001" -- NOT
 	ELSE         "0011" WHEN opcode = "00010" -- NEG
 	ELSE         "1111" WHEN opcode = "00011" -- INC
@@ -120,7 +121,8 @@ begin
 	ELSE	     "0000";
 
 	-- bit3 : MemWrite / bit2 : MemRead / bit1 : Protect_Free / bit0 : PS_W_EN
-	M <= "1000" WHEN opcode = "10010" -- Push
+	M <= "0000" WHEN IsInstIN = '0'
+	ELSE "1000" WHEN opcode = "10010" -- Push
 	ELSE "0100" WHEN opcode = "10011" -- Pop
 	ELSE "0100" WHEN opcode = "10100" -- LDD
 	ELSE "1000" WHEN opcode = "10101" -- STD
@@ -133,7 +135,8 @@ begin
 	ELSE "0000";
 
 	--bit3 and bit2 : MeM_In_Adrs / bit1 and bit0 : MeM_Data
-	M_DataMeM <= "0001" WHEN opcode = "10010" -- Push
+	M_DataMeM <= "0000" WHEN IsInstIN = '0'
+	ELSE		 "0001" WHEN opcode = "10010" -- Push
 	ELSE 		 "0000" WHEN opcode = "10011" -- Pop
 	ELSE 		 "1000" WHEN opcode = "10100" -- LDD
 	ELSE 		 "1000" WHEN opcode = "10101" -- STD
@@ -147,7 +150,8 @@ begin
 
 
 	-- bit1 : Push/Pop / bit0 : SP_Enable
-	Push_Pop_Ctrl <= "01" WHEN opcode = "10010" -- Push
+	Push_Pop_Ctrl <= "00" WHEN IsInstIN = '0'
+	ELSE			 "01" WHEN opcode = "10010" -- Push
 	ELSE 			 "11" WHEN opcode = "10011" -- Pop
 	ELSE 			 "01" WHEN opcode = "11010" -- Call
 	ELSE 			 "11" WHEN opcode = "11011" -- RET
